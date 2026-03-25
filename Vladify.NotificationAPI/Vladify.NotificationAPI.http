@@ -1,0 +1,6 @@
+@Vladify.NotificationAPI_HostAddress = http://localhost:5064
+
+GET {{Vladify.NotificationAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
