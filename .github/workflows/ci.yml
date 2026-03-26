@@ -33,7 +33,7 @@ jobs:
     - name: Install SonarCloud scanner
       run: dotnet tool install --global dotnet-sonarscanner
 
-    - name: Start analyis
+    - name: Start Analysis
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
