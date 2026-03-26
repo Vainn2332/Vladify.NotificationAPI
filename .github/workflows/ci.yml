@@ -30,7 +30,7 @@ jobs:
     - name: Restore Dependencies
       run: dotnet restore 
 
-    - name: Install SonarCloud scanner
+    - name: Install SonarCloud Scanner
       run: dotnet tool install --global dotnet-sonarscanner
 
     - name: Start Analysis
