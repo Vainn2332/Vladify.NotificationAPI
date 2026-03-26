@@ -43,7 +43,6 @@ jobs:
         /o:"vainn2332"
         /d:sonar.token="$SONAR_TOKEN"
         /d:sonar.host.url="https://sonarcloud.io"
-        /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml"
 
     - name: Build
       run: dotnet build --no-restore --configuration Release
