@@ -7,5 +7,7 @@ public class User
     [BsonId]
     public int Id { get; set; }
 
+    public required string UserId { get; set; }
+
     public required NotificationSubscription NotificationSubscription { get; set; }
 }
