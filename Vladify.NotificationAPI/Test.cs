@@ -9,12 +9,10 @@ namespace Vladify.NotificationAPI;
 [ApiController]
 public class Test(INotificationRepository _repo) : ControllerBase
 {
-
-
     [HttpGet]
-    public IEnumerable<string> Get()
+    public Task<List<NotificationInfo>> Get(int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
-        return new string[] { "value1", "value2" };
+        return _repo.GetAllAsync(pageNumber, pageSize, cancellationToken);
     }
 
     [HttpGet("{id}")]
@@ -30,12 +28,14 @@ public class Test(INotificationRepository _repo) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
+    public async Task Put(string id, [FromBody] NotificationInfo notification, CancellationToken cancellationToken)
     {
+        await _repo.UpdateAsync(notification, cancellationToken);
     }
 
     [HttpDelete("{id}")]
-    public void Delete(int id)
+    public async Task Delete(string id, CancellationToken cancellationToken)
     {
+        await _repo.DeleteAsync(id, cancellationToken);
     }
 }

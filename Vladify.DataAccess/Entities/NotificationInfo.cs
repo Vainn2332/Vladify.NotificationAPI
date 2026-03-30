@@ -1,11 +1,13 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Vladify.DataAccess.Entities;
 
 public class NotificationInfo
 {
     [BsonId]
-    public required string Id { get; set; }
+    [BsonRepresentation(BsonType.ObjectId)]
+    public required String Id { get; set; }
 
     public required string UserId { get; set; }
 
