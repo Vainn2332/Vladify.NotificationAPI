@@ -4,9 +4,9 @@ namespace Vladify.DataAccess;
 
 public interface INotificationRepository
 {
-    public Task<NotificationInfo> CreateAsync(NotificationInfo notification);
-    public Task<NotificationInfo?> GetByIdAsync(string id);
-    public Task<List<NotificationInfo>> GetAllAsync(string pageNumber, string pageSize);
-    public Task UpdateAsync(NotificationInfo notification);
-    public Task DeleteAsync(string id);
+    public Task<NotificationInfo> CreateAsync(NotificationInfo notification, CancellationToken cancellationToken);
+    public Task<NotificationInfo?> GetByIdAsync(string id, CancellationToken cancellationToken);
+    public Task<List<NotificationInfo>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
+    public Task UpdateAsync(NotificationInfo notification, CancellationToken cancellationToken);
+    public Task DeleteAsync(string id, CancellationToken cancellationToken);
 }
