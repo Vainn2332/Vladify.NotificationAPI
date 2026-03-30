@@ -1,12 +1,14 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
+using Vladify.DataAccess.Constants;
+using Vladify.DataAccess.Entities;
 
 namespace Vladify.DataAccess.Extensions;
 
 public static class DataAccessExtensions
 {
-    public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddMongoDb(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<IMongoClient>(serviceProvider =>
         {
@@ -14,6 +16,14 @@ public static class DataAccessExtensions
                 ?? throw new InvalidOperationException($"Connection string 'MongoDb' not found!");
 
             return new MongoClient(connectionString);
+        });
+
+        services.AddSingleton(serviceProvider =>
+        {
+            var client = serviceProvider.GetRequiredService<IMongoClient>();
+            var database = client.GetDatabase(DataAccessConstants.DatabaseName);
+
+            return database.GetCollection<NotificationInfo>(DataAccessConstants.CollectionName);
         });
 
         return services;
