@@ -5,7 +5,7 @@ namespace Vladify.DataAccess.Entities;
 public class NotificationInfo
 {
     [BsonId]
-    public int Id { get; set; }
+    public required string Id { get; set; }
 
     public required string UserId { get; set; }
 
