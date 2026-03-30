@@ -10,4 +10,6 @@ public class User
     public required string UserId { get; set; }
 
     public required NotificationSubscription NotificationSubscription { get; set; }
+
+    public List<string>? Subscriptions { get; set; }
 }
