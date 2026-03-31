@@ -27,7 +27,7 @@ public class NotificationRepository(IMongoCollection<NotificationInfo> _notifica
 
     public Task UpdateAsync(NotificationInfo notification, CancellationToken cancellationToken)
     {
-        return _notifications.ReplaceOneAsync(item => item.Id == notification.Id, notification, new ReplaceOptions(), cancellationToken);
+        return _notifications.ReplaceOneAsync(item => item.Id == notification.Id, notification, new ReplaceOptions() { IsUpsert = true }, cancellationToken);
     }
 
     public Task DeleteAsync(string id, CancellationToken cancellationToken)
