@@ -12,14 +12,12 @@ public class NotificationRepository(IMongoCollection<NotificationInfo> _notifica
         return notification;
     }
 
-    public async Task<List<NotificationInfo>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
+    public async Task<IEnumerable<NotificationInfo>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
-        var items = await _notifications.Find(item => true)
+        return await _notifications.Find(item => true)
             .Skip((pageNumber - 1) * pageSize)
             .Limit(pageSize)
             .ToListAsync(cancellationToken);
-
-        return items;
     }
 
     public async Task<NotificationInfo?> GetByIdAsync(string id, CancellationToken cancellationToken)
@@ -27,13 +25,13 @@ public class NotificationRepository(IMongoCollection<NotificationInfo> _notifica
         return await _notifications.Find(item => item.Id == id).FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task UpdateAsync(NotificationInfo notification, CancellationToken cancellationToken)
+    public Task UpdateAsync(NotificationInfo notification, CancellationToken cancellationToken)
     {
-        await _notifications.ReplaceOneAsync(item => item.Id == notification.Id, notification, new ReplaceOptions(), cancellationToken);
+        return _notifications.ReplaceOneAsync(item => item.Id == notification.Id, notification, new ReplaceOptions(), cancellationToken);
     }
 
-    public async Task DeleteAsync(string id, CancellationToken cancellationToken)
+    public Task DeleteAsync(string id, CancellationToken cancellationToken)
     {
-        await _notifications.DeleteOneAsync(item => item.Id == id, cancellationToken);
+        return _notifications.DeleteOneAsync(item => item.Id == id, cancellationToken);
     }
 }

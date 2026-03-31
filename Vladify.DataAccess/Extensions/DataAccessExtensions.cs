@@ -10,8 +10,7 @@ public static class DataAccessExtensions
 {
     public static IServiceCollection AddDataAccessLayer(this IServiceCollection services, IConfiguration configuration)
     {
-        services
-            .AddMongoDb(configuration);
+        services.AddMongoDb(configuration);
 
         return services;
     }
@@ -19,7 +18,7 @@ public static class DataAccessExtensions
     {
         services.AddSingleton<IMongoClient>(serviceProvider =>
         {
-            var connectionString = configuration.GetConnectionString("MongoDb")
+            var connectionString = configuration.GetConnectionString(DataAccessConstants.DatabaseName)
                 ?? throw new InvalidOperationException($"Connection string 'MongoDb' not found!");
 
             return new MongoClient(connectionString);
