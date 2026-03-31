@@ -8,6 +8,13 @@ namespace Vladify.DataAccess.Extensions;
 
 public static class DataAccessExtensions
 {
+    public static IServiceCollection AddDataAccessLayer(this IServiceCollection services, IConfiguration configuration)
+    {
+        services
+            .AddMongoDb(configuration);
+
+        return services;
+    }
     public static IServiceCollection AddMongoDb(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<IMongoClient>(serviceProvider =>
