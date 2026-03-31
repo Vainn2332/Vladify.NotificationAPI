@@ -26,6 +26,8 @@ public static class DataAccessExtensions
             return database.GetCollection<NotificationInfo>(DataAccessConstants.CollectionName);
         });
 
+        services.AddScoped<INotificationRepository, NotificationRepository>();
+
         return services;
     }
 }
