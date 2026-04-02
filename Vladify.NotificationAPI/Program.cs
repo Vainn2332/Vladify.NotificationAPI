@@ -1,3 +1,4 @@
+using Scalar.AspNetCore;
 using Vladify.BuisnessLogic.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
