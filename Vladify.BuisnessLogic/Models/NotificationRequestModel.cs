@@ -1,6 +1,4 @@
-﻿using Vladify.DataAccess.Entities;
-
-namespace Vladify.BuisnessLogic.Models;
+﻿namespace Vladify.BuisnessLogic.Models;
 
 public class NotificationRequestModel
 {
@@ -10,5 +8,5 @@ public class NotificationRequestModel
 
     public string? PhoneNumber { get; set; }
 
-    public required NotificationSubscription NotificationSubscription { get; set; }
+    public required NotificationSubscriptionModel NotificationSubscription { get; set; }
 }
