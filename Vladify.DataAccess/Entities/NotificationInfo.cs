@@ -9,7 +9,8 @@ public class NotificationInfo
     [BsonRepresentation(BsonType.ObjectId)]
     public required string Id { get; set; }
 
-    public required string UserId { get; set; }
+    [BsonGuidRepresentation(GuidRepresentation.Standard)]
+    public required Guid UserId { get; set; }
 
     public required string EmailAddress { get; set; }
 
