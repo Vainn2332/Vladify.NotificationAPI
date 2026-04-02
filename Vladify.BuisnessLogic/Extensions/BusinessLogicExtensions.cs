@@ -1,17 +1,20 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Vladify.BuisnessLogic.Interfaces;
 using Vladify.BuisnessLogic.MapperProfiles;
+using Vladify.DataAccess.Extensions;
 
 namespace Vladify.BuisnessLogic.Extensions;
 
 public static class BusinessLogicExtensions
 {
-    public static IServiceCollection AddBusinessLogicLayer(this IServiceCollection services)
+    public static IServiceCollection AddBusinessLogicLayer(this IServiceCollection services, IConfiguration configuration)
     {
         services
             .AddServices()
-            .AddMapping();
+            .AddMapping()
+            .AddDataAccessLayer(configuration);
 
         return services;
     }
