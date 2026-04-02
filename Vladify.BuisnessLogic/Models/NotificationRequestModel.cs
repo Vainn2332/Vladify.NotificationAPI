@@ -2,7 +2,7 @@
 
 public class NotificationRequestModel
 {
-    public required string UserId { get; set; }
+    public required Guid UserId { get; set; }
 
     public required string EmailAddress { get; set; }
 

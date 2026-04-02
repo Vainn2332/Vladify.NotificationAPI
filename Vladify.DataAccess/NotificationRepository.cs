@@ -25,7 +25,7 @@ public class NotificationRepository(IMongoCollection<NotificationInfo> _notifica
         return await _notifications.Find(item => item.Id == id).FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<NotificationInfo?> GetByUserIdAsync(string userId, CancellationToken cancellationToken)
+    public async Task<NotificationInfo?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken)
     {
         return await _notifications.Find(item => item.UserId == userId).FirstOrDefaultAsync(cancellationToken);
     }
