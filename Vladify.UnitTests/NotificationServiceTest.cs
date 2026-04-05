@@ -17,6 +17,7 @@ public class NotificationServiceTest
     private readonly Mock<INotificationRepository> _repositoryMock;
     private readonly Mock<IMapper> _mapperMock;
     private readonly NotificationService _notificationService;
+
     public NotificationServiceTest()
     {
         _fixture = new Fixture().Customize(new AutoMoqCustomization());
