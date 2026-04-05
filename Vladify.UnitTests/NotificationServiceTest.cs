@@ -4,6 +4,7 @@ using AutoMapper;
 using FluentAssertions;
 using Moq;
 using Vladify.BuisnessLogic;
+using Vladify.BuisnessLogic.Exceptions;
 using Vladify.BuisnessLogic.Models;
 using Vladify.DataAccess;
 using Vladify.DataAccess.Entities;
@@ -116,5 +117,51 @@ public class NotificationServiceTest
 
         result.Should().BeNull();
         _repositoryMock.Verify(m => m.GetByIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_Should_Upsert_WhenValidInput()
+    {
+        var request = _fixture.Create<NotificationModel>();
+        var entity = _fixture.Create<NotificationInfo>();
+        var updatedEntity = _fixture.Create<NotificationInfo>();
+        var expectedModel = _fixture.Create<NotificationModel>();
+        _mapperMock.Setup(m => m.Map<NotificationInfo>(request)).Returns(entity);
+        _repositoryMock.Setup(m => m.UpdateAsync(entity, CancellationToken.None)).Returns(Task.CompletedTask);
+        _repositoryMock.Setup(m => m.GetByIdAsync(entity.Id, CancellationToken.None)).ReturnsAsync(updatedEntity);
+        _mapperMock.Setup(m => m.Map<NotificationModel>(updatedEntity)).Returns(expectedModel);
+
+        var result = await _notificationService.UpdateAsync(request, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result.Should().BeOfType<NotificationModel>();
+        _repositoryMock.Verify(m => m.UpdateAsync(It.IsAny<NotificationInfo>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_Should_DeleteEntity_WhenValidInput()
+    {
+        var id = _fixture.Create<string>();
+        var existingEntity = _fixture.Create<NotificationInfo>();
+        _repositoryMock.Setup(m => m.GetByIdAsync(id, CancellationToken.None)).ReturnsAsync(existingEntity);
+        _repositoryMock.Setup(m => m.DeleteAsync(id, CancellationToken.None)).Returns(Task.CompletedTask);
+
+        await _notificationService.DeleteAsync(id, CancellationToken.None);
+
+        _repositoryMock.Verify(m => m.GetByIdAsync(id, CancellationToken.None), Times.Once);
+        _repositoryMock.Verify(m => m.DeleteAsync(id, CancellationToken.None), Times.Once);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_Should_ReturnNotFoundException_WhenNotFound()
+    {
+        var id = _fixture.Create<string>();
+        _repositoryMock.Setup(m => m.GetByIdAsync(id, CancellationToken.None)).ReturnsAsync((NotificationInfo?)null);
+
+        var act = async () => await _notificationService.DeleteAsync(id, CancellationToken.None);
+
+        await act.Should().ThrowAsync<NotFoundException>();
+        _repositoryMock.Verify(m => m.GetByIdAsync(id, CancellationToken.None), Times.Once);
+        _repositoryMock.Verify(m => m.DeleteAsync(id, CancellationToken.None), Times.Never);
     }
 }
