@@ -91,7 +91,6 @@ public class NotificationServiceTest
         _repositoryMock.Verify(m => m.GetByIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
-
     [Fact]
     public async Task GetByIdAsync_Should_ReturnNull_WhenNotFound()
     {
