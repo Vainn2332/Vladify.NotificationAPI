@@ -74,21 +74,6 @@ public class NotificationServiceTest
         _repositoryMock.Verify(m => m.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
-    /*[Theory]
-    [InlineData(-1, 10)]
-    [InlineData(-5, 10)]
-    [InlineData(1, 0)]
-    [InlineData(1, -1)]
-    [InlineData(0, 10)]
-    [InlineData(-1, -1)]
-    public async Task GetNotifications_Should_ThrowArgumentException_WhenInputIsInvalid(int pageNumber, int pageSize)
-    {
-        var act = async () => await _notificationService.GetAllAsync(pageNumber, pageSize, CancellationToken.None);
-
-        await act.Should().ThrowAsync<ArgumentException>();
-        _repositoryMock.Verify(m => m.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
-    }*/
-
     [Fact]
     public async Task GetByIdAsync_Should_ReturnModel_WhenValidInput()
     {
