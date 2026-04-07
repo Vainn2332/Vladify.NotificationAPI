@@ -14,7 +14,7 @@ public class NotificationInfo
 
     public required string EmailAddress { get; set; }
 
-    public string? PhoneNumber { get; set; }
+    public required string FirebaseCloudMessagingToken { get; set; }
 
     public required NotificationSubscription NotificationSubscription { get; set; }
 }
