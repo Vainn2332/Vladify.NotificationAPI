@@ -14,7 +14,7 @@ public class NotificationService(INotificationRepository _repository, IMapper _m
         var target = await _repository.GetByUserIdAsync(notificationRequestModel.UserId, cancellationToken);
         if (target is not null)
         {
-            throw new ArgumentException("notification with such user already exists!");
+            throw new ArgumentException("Notification with such user already exists!");
         }
         var notification = _mapper.Map<NotificationInfo>(notificationRequestModel);
 
