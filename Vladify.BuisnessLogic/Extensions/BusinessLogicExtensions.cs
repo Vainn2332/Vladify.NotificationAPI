@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Vladify.BuisnessLogic.Interfaces;
@@ -15,6 +17,7 @@ public static class BusinessLogicExtensions
         services
             .AddServices()
             .AddMapping()
+            .AddFirebase(configuration)
             .ConfigureOptions(configuration)
             .AddDataAccessLayer(configuration);
 
@@ -43,6 +46,18 @@ public static class BusinessLogicExtensions
     public static IServiceCollection ConfigureOptions(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<FirebaseOptions>(configuration.GetSection(FirebaseOptions.SectionName));
+
+        return services;
+    }
+
+    public static IServiceCollection AddFirebase(this IServiceCollection services, IConfiguration configuration)
+    {
+        var firebaseOptions = configuration.GetSection(FirebaseOptions.SectionName).Get<FirebaseOptions>();
+
+        FirebaseApp.Create(new AppOptions()
+        {
+            Credential = GoogleCredential.FromFile(firebaseOptions!.KeyPath)
+        });
 
         return services;
     }
