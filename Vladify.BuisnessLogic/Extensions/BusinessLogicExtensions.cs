@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Vladify.BuisnessLogic.Interfaces;
 using Vladify.BuisnessLogic.MapperProfiles;
 using Vladify.DataAccess.Extensions;
+using Vladify.DataAccess.Options;
 
 namespace Vladify.BuisnessLogic.Extensions;
 
@@ -14,6 +15,7 @@ public static class BusinessLogicExtensions
         services
             .AddServices()
             .AddMapping()
+            .ConfigureOptions(configuration)
             .AddDataAccessLayer(configuration);
 
         return services;
@@ -34,6 +36,13 @@ public static class BusinessLogicExtensions
         var mapper = serviceProvider.GetRequiredService<IMapper>();
 
         mapper.ConfigurationProvider.AssertConfigurationIsValid();
+
+        return services;
+    }
+
+    public static IServiceCollection ConfigureOptions(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<FirebaseOptions>(configuration.GetSection(FirebaseOptions.SectionName));
 
         return services;
     }
