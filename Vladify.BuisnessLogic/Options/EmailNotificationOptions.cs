@@ -4,7 +4,7 @@ public class EmailNotificationOptions
 {
     public const string SectionName = "EmailNotificationOptions";
 
-    public int ApplicationPassword { get; set; }
+    public required string ApplicationPassword { get; set; }
 
     public int Port { get; set; }
 
@@ -12,5 +12,5 @@ public class EmailNotificationOptions
 
     public required string SenderName { get; set; }
 
-    public required string SMTPClientName { get; set; }
+    public required string SMTPClientUrl { get; set; }
 }
