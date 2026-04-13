@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Vladify.BuisnessLogic.Interfaces;
 using Vladify.BuisnessLogic.MapperProfiles;
+using Vladify.BuisnessLogic.Options;
 using Vladify.DataAccess.Extensions;
 
 namespace Vladify.BuisnessLogic.Extensions;
@@ -14,6 +15,7 @@ public static class BusinessLogicExtensions
         services
             .AddServices()
             .AddMapping()
+            .ConfigureOptions(configuration)
             .AddDataAccessLayer(configuration);
 
         return services;
@@ -34,6 +36,13 @@ public static class BusinessLogicExtensions
         var mapper = serviceProvider.GetRequiredService<IMapper>();
 
         mapper.ConfigurationProvider.AssertConfigurationIsValid();
+
+        return services;
+    }
+
+    public static IServiceCollection ConfigureOptions(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<EmailNotificationOptions>(configuration.GetSection(EmailNotificationOptions.SectionName));
 
         return services;
     }
