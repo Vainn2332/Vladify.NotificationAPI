@@ -24,6 +24,7 @@ public static class BusinessLogicExtensions
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<IEmailService, EmailService>();
 
         return services;
     }
