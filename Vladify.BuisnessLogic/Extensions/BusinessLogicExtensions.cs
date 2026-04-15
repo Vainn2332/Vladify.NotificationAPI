@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Vladify.BuisnessLogic.Interfaces;
 using Vladify.BuisnessLogic.MapperProfiles;
+using Vladify.BuisnessLogic.Options;
 using Vladify.DataAccess.Extensions;
 using Vladify.DataAccess.Options;
 
@@ -17,7 +18,6 @@ public static class BusinessLogicExtensions
         services
             .AddServices()
             .AddMapping()
-            .AddFirebase(configuration)
             .ConfigureOptions(configuration)
             .AddDataAccessLayer(configuration);
 
@@ -27,6 +27,7 @@ public static class BusinessLogicExtensions
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<IEmailService, EmailService>();
 
         return services;
     }
@@ -45,19 +46,7 @@ public static class BusinessLogicExtensions
 
     public static IServiceCollection ConfigureOptions(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<FirebaseOptions>(configuration.GetSection(FirebaseOptions.SectionName));
-
-        return services;
-    }
-
-    public static IServiceCollection AddFirebase(this IServiceCollection services, IConfiguration configuration)
-    {
-        var firebaseOptions = configuration.GetSection(FirebaseOptions.SectionName).Get<FirebaseOptions>();
-
-        FirebaseApp.Create(new AppOptions()
-        {
-            Credential = GoogleCredential.FromFile(firebaseOptions!.KeyPath)
-        });
+        services.Configure<EmailNotificationOptions>(configuration.GetSection(EmailNotificationOptions.SectionName));
 
         return services;
     }
