@@ -2,5 +2,5 @@
 
 public interface IEmailService
 {
-    public Task SendAsync(string receiver, string subject, string message, CancellationToken cancellationToken);
+    public Task SendToAllUsersAsync(string subject, string message, CancellationToken cancellationToken);
 }
