@@ -1,10 +1,7 @@
-﻿using MailKit.Net.Smtp;
-using MailKit.Security;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
-using System.Net;
 using Vladify.BuisnessLogic.Interfaces;
 using Vladify.BuisnessLogic.Models;
 using Vladify.BuisnessLogic.Options;
@@ -15,12 +12,14 @@ public class EmailService : IEmailService
     private readonly EmailNotificationOptions _options;
     private readonly INotificationService _notificationService;
     private readonly ILogger<EmailService> _logger;
+    private readonly ISmtpClientFactory _factory;
 
-    public EmailService(IOptions<EmailNotificationOptions> options, INotificationService notificationService, ILogger<EmailService> logger)
+    public EmailService(IOptions<EmailNotificationOptions> options, INotificationService notificationService, ILogger<EmailService> logger, ISmtpClientFactory factory)
     {
         _options = options.Value;
         _notificationService = notificationService;
         _logger = logger;
+        _factory = factory;
     }
 
     public async Task SendToAllUsersAsync(string subject, string message, CancellationToken cancellationToken)
@@ -42,10 +41,7 @@ public class EmailService : IEmailService
             {
                 try
                 {
-                    using var client = new SmtpClient();
-                    await client.ConnectAsync(_options.SMTPClientUrl, _options.Port, SecureSocketOptions.StartTls, cancellationToken);
-                    var creds = new NetworkCredential(_options.SenderEmail, _options.ApplicationPassword);
-                    await client.AuthenticateAsync(creds, cancellationToken);
+                    using var client = await _factory.CreateClientAsync(cancellationToken);
 
                     foreach (var notificationInfo in chunk)
                     {
@@ -54,7 +50,6 @@ public class EmailService : IEmailService
                         {
                             continue;
                         }
-
                         var mail = CreateMessage(notificationInfo.EmailAddress, subject, message);
                         await client.SendAsync(mail, cancellationToken);
                     }
