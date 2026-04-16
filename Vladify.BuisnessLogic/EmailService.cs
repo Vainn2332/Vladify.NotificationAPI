@@ -42,10 +42,7 @@ public class EmailService : IEmailService
             {
                 try
                 {
-                    using var client = new SmtpClient();
-                    await client.ConnectAsync(_options.SMTPClientUrl, _options.Port, SecureSocketOptions.StartTls, cancellationToken);
-                    var creds = new NetworkCredential(_options.SenderEmail, _options.ApplicationPassword);
-                    await client.AuthenticateAsync(creds, cancellationToken);
+                    using var client = await CreateSmtpClientAsync(cancellationToken);
 
                     foreach (var notificationInfo in chunk)
                     {
@@ -78,5 +75,15 @@ public class EmailService : IEmailService
         mail.Body = new TextPart(TextFormat.Html) { Text = message };
 
         return mail;
+    }
+
+    private async Task<SmtpClient> CreateSmtpClientAsync(CancellationToken cancellationToken)
+    {
+        var client = new SmtpClient();
+        await client.ConnectAsync(_options.SMTPClientUrl, _options.Port, SecureSocketOptions.StartTls, cancellationToken);
+        var creds = new NetworkCredential(_options.SenderEmail, _options.ApplicationPassword);
+        await client.AuthenticateAsync(creds, cancellationToken);
+
+        return client;
     }
 }
