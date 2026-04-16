@@ -79,9 +79,9 @@ public class EmailServiceTest
         _loggerMock.Verify(m => m.Log(
             LogLevel.Error,
             It.IsAny<EventId>(),
-            It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Error happened while trying to notify user via email")),
+            It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("Error happened while trying to notify user via email")),
             It.IsAny<Exception>(),
-            It.IsAny<Func<It.IsAnyType, Exception, string>>()
+            It.IsAny<Func<It.IsAnyType, Exception?, string>>()
         ), Times.Once);
         _clientMock.Verify(m => m.SendAsync(It.IsAny<MimeMessage>(), It.IsAny<CancellationToken>(), It.IsAny<ITransferProgress>()), Times.Exactly(20));
     }
