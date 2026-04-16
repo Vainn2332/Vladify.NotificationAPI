@@ -57,7 +57,6 @@ public class EmailService : IEmailService
                 }
                 catch (Exception ex)
                 {
-
                     _logger.LogError(ex, "Error happened while trying to notify user via email");
                 }
             });
