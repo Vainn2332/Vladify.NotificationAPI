@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
+using Vladify.BuisnessLogic.Constants;
 using Vladify.BuisnessLogic.Interfaces;
 using Vladify.BuisnessLogic.Models;
 using Vladify.BuisnessLogic.Options;
@@ -26,7 +27,7 @@ public class EmailService : IEmailService
     {
         var parallelOptions = new ParallelOptions()
         {
-            MaxDegreeOfParallelism = 5,
+            MaxDegreeOfParallelism = BusinessLogicConstants.MaxAmountOfParallelThreadsForEmailNotification,
             CancellationToken = cancellationToken
         };
         IEnumerable<NotificationModel> notificationsPart;
@@ -34,8 +35,8 @@ public class EmailService : IEmailService
 
         do
         {
-            notificationsPart = await _notificationService.GetAllAsync(pageNumber++, 100, cancellationToken);
-            var chunks = notificationsPart.Chunk(20);
+            notificationsPart = await _notificationService.GetAllAsync(pageNumber++, BusinessLogicConstants.NotificationBatchSize, cancellationToken);
+            var chunks = notificationsPart.Chunk(BusinessLogicConstants.ChunkSize);
 
             await Parallel.ForEachAsync(chunks, parallelOptions, async (chunk, cancellationToken) =>
             {
