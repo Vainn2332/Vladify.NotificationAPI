@@ -7,6 +7,4 @@ public static class BusinessLogicConstants
     public const int NotificationBatchSize = 100;
 
     public const int ChunkSize = 20;
-
-
 }
