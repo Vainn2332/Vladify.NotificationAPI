@@ -25,6 +25,7 @@ public static class BusinessLogicExtensions
     {
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<ISmtpClientFactory, SmtpClientFactory>();
 
         return services;
     }
