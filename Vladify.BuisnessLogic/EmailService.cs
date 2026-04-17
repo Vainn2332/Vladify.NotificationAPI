@@ -31,20 +31,20 @@ public class EmailService : IEmailService
             MaxDegreeOfParallelism = BusinessLogicConstants.MaxAmountOfParallelThreadsForEmailNotification,
             CancellationToken = cancellationToken
         };
-        IEnumerable<UserNotificationSettingsModel> notificationsPart;
+        IEnumerable<UserNotificationSettingsModel> subscribers;
         int pageNumber = 1;
 
         do
         {
-            notificationsPart = await _notificationService.GetAllAsync(pageNumber++, BusinessLogicConstants.NotificationBatchSize, cancellationToken);
-            var chunks = notificationsPart.Chunk(BusinessLogicConstants.ChunkSize);
+            subscribers = await _notificationService.GetEmailSubscribersAsync(pageNumber++, BusinessLogicConstants.NotificationBatchSize, cancellationToken);
+            var chunks = subscribers.Chunk(BusinessLogicConstants.ChunkSize);
 
             await Parallel.ForEachAsync(chunks, parallelOptions, async (chunk, cancellationToken) =>
             {
                 await ProcessNotificationChunkAsync(chunk, subject, message, cancellationToken);
             });
         }
-        while (notificationsPart.Any());
+        while (subscribers.Any());
     }
 
     private MimeMessage CreateMessage(string recepientEmail, string subject, string message)
@@ -63,9 +63,9 @@ public class EmailService : IEmailService
         try
         {
             using var client = await _factory.CreateClientAsync(ct);
-            foreach (var info in chunk.Where(x => x.NotificationSubscription.Email))
+            foreach (var notificationInfo in chunk)
             {
-                var mail = CreateMessage(info.EmailAddress, subject, message);
+                var mail = CreateMessage(notificationInfo.EmailAddress, subject, message);
                 await client.SendAsync(mail, ct);
             }
             await client.DisconnectAsync(true, ct);

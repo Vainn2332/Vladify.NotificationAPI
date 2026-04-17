@@ -49,7 +49,7 @@ public class EmailServiceTest
         int expectedAmountOfCalls = models.Where(m => m.NotificationSubscription.Email == true).Count();
         var expectedChunks = (int)Math.Ceiling(dataAmount / 20.0);
         _notificationServiceMock
-            .SetupSequence(s => s.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .SetupSequence(s => s.GetEmailSubscribersAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(models)
             .ReturnsAsync(new List<UserNotificationSettingsModel>());
 
@@ -66,7 +66,7 @@ public class EmailServiceTest
         var models = _fixture.CreateMany<UserNotificationSettingsModel>(40).ToList();
         models.ForEach(m => m.NotificationSubscription.Email = true);
         _notificationServiceMock
-            .SetupSequence(s => s.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .SetupSequence(s => s.GetEmailSubscribersAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(models)
             .ReturnsAsync(new List<UserNotificationSettingsModel>());
         _factoryMock
