@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
+using Vladify.BuisnessLogic.Constants;
 using Vladify.BuisnessLogic.Interfaces;
 using Vladify.BuisnessLogic.Models;
 using Vladify.BuisnessLogic.Options;
@@ -26,7 +27,7 @@ public class EmailService : IEmailService
     {
         var parallelOptions = new ParallelOptions()
         {
-            MaxDegreeOfParallelism = 5,
+            MaxDegreeOfParallelism = BusinessLogicConstants.MaxAmountOfParallelThreadsForEmailNotification,
             CancellationToken = cancellationToken
         };
         IEnumerable<NotificationModel> notificationsPart;
@@ -34,8 +35,8 @@ public class EmailService : IEmailService
 
         do
         {
-            notificationsPart = await _notificationService.GetAllAsync(pageNumber++, 100, cancellationToken);
-            var chunks = notificationsPart.Chunk(20);
+            notificationsPart = await _notificationService.GetAllAsync(pageNumber++, BusinessLogicConstants.NotificationBatchSize, cancellationToken);
+            var chunks = notificationsPart.Chunk(BusinessLogicConstants.ChunkSize);
 
             await Parallel.ForEachAsync(chunks, parallelOptions, async (chunk, cancellationToken) =>
             {
@@ -43,16 +44,9 @@ public class EmailService : IEmailService
                 {
                     using var client = await _factory.CreateClientAsync(cancellationToken);
 
-                    foreach (var notificationInfo in chunk)
-                    {
-                        var isSubcrbibedToEmailNotifications = notificationInfo.NotificationSubscription.Email;
-                        if (!isSubcrbibedToEmailNotifications)
-                        {
-                            continue;
-                        }
-                        var mail = CreateMessage(notificationInfo.EmailAddress, subject, message);
-                        await client.SendAsync(mail, cancellationToken);
-                    }
+                    var mail = CreateMessage(chunk, subject, message);
+                    await client.SendAsync(mail, cancellationToken);
+
                     await client.DisconnectAsync(true, cancellationToken);
                 }
                 catch (Exception ex)
@@ -64,11 +58,19 @@ public class EmailService : IEmailService
         while (notificationsPart.Any());
     }
 
-    private MimeMessage CreateMessage(string recepientEmail, string subject, string message)
+    private MimeMessage CreateMessage(NotificationModel[] recepientChunk, string subject, string message)
     {
         var mail = new MimeMessage();
         mail.From.Add(new MailboxAddress(_options.SenderName, _options.SenderEmail));
-        mail.To.Add(MailboxAddress.Parse(recepientEmail));
+        foreach (var notificationInfo in recepientChunk)
+        {
+            var isSubcrbibedToEmailNotifications = notificationInfo.NotificationSubscription.Email;
+            if (!isSubcrbibedToEmailNotifications)
+            {
+                continue;
+            }
+            mail.To.Add(MailboxAddress.Parse(notificationInfo.EmailAddress));
+        }
         mail.Subject = subject;
         mail.Body = new TextPart(TextFormat.Html) { Text = message };
 
