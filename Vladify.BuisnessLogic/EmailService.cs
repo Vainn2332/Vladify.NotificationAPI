@@ -44,16 +44,9 @@ public class EmailService : IEmailService
                 {
                     using var client = await _factory.CreateClientAsync(cancellationToken);
 
-                    foreach (var notificationInfo in chunk)
-                    {
-                        var isSubcrbibedToEmailNotifications = notificationInfo.NotificationSubscription.Email;
-                        if (!isSubcrbibedToEmailNotifications)
-                        {
-                            continue;
-                        }
-                        var mail = CreateMessage(notificationInfo.EmailAddress, subject, message);
-                        await client.SendAsync(mail, cancellationToken);
-                    }
+                    var mail = CreateMessage(chunk, subject, message);
+                    await client.SendAsync(mail, cancellationToken);
+
                     await client.DisconnectAsync(true, cancellationToken);
                 }
                 catch (Exception ex)
@@ -65,11 +58,19 @@ public class EmailService : IEmailService
         while (notificationsPart.Any());
     }
 
-    private MimeMessage CreateMessage(string recepientEmail, string subject, string message)
+    private MimeMessage CreateMessage(NotificationModel[] recepientChunk, string subject, string message)
     {
         var mail = new MimeMessage();
         mail.From.Add(new MailboxAddress(_options.SenderName, _options.SenderEmail));
-        mail.To.Add(MailboxAddress.Parse(recepientEmail));
+        foreach (var notificationInfo in recepientChunk)
+        {
+            var isSubcrbibedToEmailNotifications = notificationInfo.NotificationSubscription.Email;
+            if (!isSubcrbibedToEmailNotifications)
+            {
+                continue;
+            }
+            mail.To.Add(MailboxAddress.Parse(notificationInfo.EmailAddress));
+        }
         mail.Subject = subject;
         mail.Body = new TextPart(TextFormat.Html) { Text = message };
 
