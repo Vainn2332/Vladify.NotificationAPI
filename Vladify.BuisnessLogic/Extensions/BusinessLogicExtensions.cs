@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
-using FirebaseAdmin;
-using Google.Apis.Auth.OAuth2;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Vladify.BuisnessLogic.Interfaces;
 using Vladify.BuisnessLogic.MapperProfiles;
 using Vladify.BuisnessLogic.Options;
 using Vladify.DataAccess.Extensions;
-using Vladify.DataAccess.Options;
 
 namespace Vladify.BuisnessLogic.Extensions;
 
