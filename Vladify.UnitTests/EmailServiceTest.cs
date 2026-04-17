@@ -56,7 +56,7 @@ public class EmailServiceTest
         await _emailService.SendToAllUsersAsync("sub", "mes", CancellationToken.None);
 
         _factoryMock.Verify(m => m.CreateClientAsync(It.IsAny<CancellationToken>()), Times.Exactly(expectedChunks));
-        _clientMock.Verify(m => m.SendAsync(It.IsAny<MimeMessage>(), It.IsAny<CancellationToken>(), default), Times.Exactly(expectedChunks));
+        _clientMock.Verify(m => m.SendAsync(It.IsAny<MimeMessage>(), It.IsAny<CancellationToken>(), default), Times.Exactly(expectedAmountOfCalls));
         _clientMock.Verify(m => m.DisconnectAsync(true, It.IsAny<CancellationToken>()), Times.Exactly(expectedChunks));
     }
 
@@ -83,6 +83,6 @@ public class EmailServiceTest
             It.IsAny<Exception>(),
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()
         ), Times.Once);
-        _clientMock.Verify(m => m.SendAsync(It.IsAny<MimeMessage>(), It.IsAny<CancellationToken>(), It.IsAny<ITransferProgress>()), Times.Once);
+        _clientMock.Verify(m => m.SendAsync(It.IsAny<MimeMessage>(), It.IsAny<CancellationToken>(), It.IsAny<ITransferProgress>()), Times.Exactly(20));
     }
 }
