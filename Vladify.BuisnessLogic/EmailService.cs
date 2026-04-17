@@ -40,26 +40,7 @@ public class EmailService : IEmailService
 
             await Parallel.ForEachAsync(chunks, parallelOptions, async (chunk, cancellationToken) =>
             {
-                try
-                {
-                    using var client = await _factory.CreateClientAsync(cancellationToken);
-
-                    foreach (var notificationInfo in chunk)
-                    {
-                        var isSubcrbibedToEmailNotifications = notificationInfo.NotificationSubscription.Email;
-                        if (!isSubcrbibedToEmailNotifications)
-                        {
-                            continue;
-                        }
-                        var mail = CreateMessage(notificationInfo.EmailAddress, subject, message);
-                        await client.SendAsync(mail, cancellationToken);
-                    }
-                    await client.DisconnectAsync(true, cancellationToken);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error happened while trying to notify user via email");
-                }
+                await ProcessNotificationChunkAsync(chunk, subject, message, cancellationToken);
             });
         }
         while (notificationsPart.Any());
@@ -74,5 +55,23 @@ public class EmailService : IEmailService
         mail.Body = new TextPart(TextFormat.Html) { Text = message };
 
         return mail;
+    }
+
+    private async Task ProcessNotificationChunkAsync(IEnumerable<NotificationModel> chunk, string subject, string message, CancellationToken ct)
+    {
+        try
+        {
+            using var client = await _factory.CreateClientAsync(ct);
+            foreach (var info in chunk.Where(x => x.NotificationSubscription.Email))
+            {
+                var mail = CreateMessage(info.EmailAddress, subject, message);
+                await client.SendAsync(mail, ct);
+            }
+            await client.DisconnectAsync(true, ct);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error happened while trying to notify user via email");
+        }
     }
 }
