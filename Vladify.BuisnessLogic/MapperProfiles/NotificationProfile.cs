@@ -8,11 +8,11 @@ public class NotificationProfile : Profile
 {
     public NotificationProfile()
     {
-        CreateMap<NotificationModel, NotificationInfo>().ReverseMap();
+        CreateMap<UserNotificationSettingsModel, UserNotificationSettings>().ReverseMap();
 
         CreateMap<NotificationSubscriptionModel, NotificationSubscription>().ReverseMap();
 
-        CreateMap<NotificationRequestModel, NotificationInfo>()
+        CreateMap<UserNotificationSettingsRequestModel, UserNotificationSettings>()
            .ForMember(dest => dest.Id, opt => opt.Ignore());
     }
 }
