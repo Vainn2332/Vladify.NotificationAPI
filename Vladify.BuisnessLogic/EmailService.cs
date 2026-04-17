@@ -8,6 +8,7 @@ using Vladify.BuisnessLogic.Models;
 using Vladify.BuisnessLogic.Options;
 
 namespace Vladify.BuisnessLogic;
+
 public class EmailService : IEmailService
 {
     private readonly EmailNotificationOptions _options;
@@ -30,7 +31,7 @@ public class EmailService : IEmailService
             MaxDegreeOfParallelism = BusinessLogicConstants.MaxAmountOfParallelThreadsForEmailNotification,
             CancellationToken = cancellationToken
         };
-        IEnumerable<NotificationModel> notificationsPart;
+        IEnumerable<UserNotificationSettingsModel> notificationsPart;
         int pageNumber = 1;
 
         do
@@ -57,7 +58,7 @@ public class EmailService : IEmailService
         return mail;
     }
 
-    private async Task ProcessNotificationChunkAsync(IEnumerable<NotificationModel> chunk, string subject, string message, CancellationToken ct)
+    private async Task ProcessNotificationChunkAsync(IEnumerable<UserNotificationSettingsModel> chunk, string subject, string message, CancellationToken ct)
     {
         try
         {

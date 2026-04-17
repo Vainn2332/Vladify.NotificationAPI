@@ -45,13 +45,13 @@ public class EmailServiceTest
     [InlineData(81)]
     public async Task SendToAllUsersAsync_ShouldSendToAll_WhenValidInput(int dataAmount)
     {
-        var models = _fixture.CreateMany<NotificationModel>(dataAmount);
+        var models = _fixture.CreateMany<UserNotificationSettingsModel>(dataAmount);
         int expectedAmountOfCalls = models.Where(m => m.NotificationSubscription.Email == true).Count();
         var expectedChunks = (int)Math.Ceiling(dataAmount / 20.0);
         _notificationServiceMock
             .SetupSequence(s => s.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(models)
-            .ReturnsAsync(new List<NotificationModel>());
+            .ReturnsAsync(new List<UserNotificationSettingsModel>());
 
         await _emailService.SendToAllUsersAsync("sub", "mes", CancellationToken.None);
 
@@ -63,12 +63,12 @@ public class EmailServiceTest
     [Fact]
     public async Task SendToAllUsersAsync_ShouldContinueProcessing_WhenOneChunkFails()
     {
-        var models = _fixture.CreateMany<NotificationModel>(40).ToList();
+        var models = _fixture.CreateMany<UserNotificationSettingsModel>(40).ToList();
         models.ForEach(m => m.NotificationSubscription.Email = true);
         _notificationServiceMock
             .SetupSequence(s => s.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(models)
-            .ReturnsAsync(new List<NotificationModel>());
+            .ReturnsAsync(new List<UserNotificationSettingsModel>());
         _factoryMock
             .SetupSequence(f => f.CreateClientAsync(It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception("Failed to Create Smtp Client!"))

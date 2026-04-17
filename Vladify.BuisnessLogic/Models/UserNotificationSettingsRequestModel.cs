@@ -1,6 +1,6 @@
 ﻿namespace Vladify.BuisnessLogic.Models;
 
-public class NotificationRequestModel
+public class UserNotificationSettingsRequestModel
 {
     public required Guid UserId { get; set; }
 
