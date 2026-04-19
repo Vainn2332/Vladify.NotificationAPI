@@ -80,6 +80,8 @@ public static class BusinessLogicExtensions
                         config.ConfigureConsumer<SongConsumer>(context);
 
                         config.AutoOffsetReset = AutoOffsetReset.Earliest;
+
+                        config.CreateIfMissing();
                     });
                 });
             });
