@@ -31,7 +31,7 @@ public static class BusinessLogicExtensions
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<ISmtpClientFactory, SmtpClientFactory>();
-
+        services.AddScoped<TESTProducer>();
         return services;
     }
 
@@ -71,6 +71,8 @@ public static class BusinessLogicExtensions
             {
                 rider.AddConsumer<SongConsumer>();
 
+                rider.AddProducer<SongMessage>(kafkaOptions.Topics.SongCreated);
+
                 rider.UsingKafka((context, factory) =>
                 {
                     factory.Host(kafkaOptions.ServerHost);
@@ -84,6 +86,7 @@ public static class BusinessLogicExtensions
                         config.CreateIfMissing();
                     });
                 });
+
             });
         });
 
