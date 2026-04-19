@@ -21,6 +21,6 @@ public class SongConsumer : IConsumer<SongMessage>
             @$"<p>У {songData.Author} в альбоме {songData.Album} вышел новый трек {songData.Title}! Успей заценить</p>";
         var subject = "Новый трек";
 
-        return _emailService.SendToAllUsersAsync(subject, message, CancellationToken.None);
+        return _emailService.SendToAllUsersAsync(subject, message, context.CancellationToken);
     }
 }
