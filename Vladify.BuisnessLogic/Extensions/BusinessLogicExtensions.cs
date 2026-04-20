@@ -1,12 +1,8 @@
 ﻿using AutoMapper;
-using Confluent.Kafka;
-using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Vladify.BuisnessLogic.Consumers;
 using Vladify.BuisnessLogic.Interfaces;
 using Vladify.BuisnessLogic.MapperProfiles;
-using Vladify.BuisnessLogic.Models.Messages;
 using Vladify.BuisnessLogic.Options;
 using Vladify.DataAccess.Extensions;
 
@@ -20,7 +16,6 @@ public static class BusinessLogicExtensions
             .AddServices()
             .AddMapping()
             .ConfigureOptions(configuration)
-            .AddKafka(configuration)
             .AddDataAccessLayer(configuration);
 
         return services;
@@ -31,7 +26,7 @@ public static class BusinessLogicExtensions
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<ISmtpClientFactory, SmtpClientFactory>();
-        services.AddScoped<TESTProducer>();
+        services.AddSingleton<IKafkaProducerService, KafkaProducerService>();
         return services;
     }
 
@@ -50,45 +45,7 @@ public static class BusinessLogicExtensions
     public static IServiceCollection ConfigureOptions(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<EmailNotificationOptions>(configuration.GetSection(EmailNotificationOptions.SectionName));
-        services.Configure<KafkaOptions>(configuration.GetSection(KafkaOptions.SectionName));
-
-        return services;
-    }
-
-    public static IServiceCollection AddKafka(this IServiceCollection services, IConfiguration configuration)
-    {
-        var kafkaOptions = configuration.GetSection(KafkaOptions.SectionName).Get<KafkaOptions>()
-            ?? throw new ArgumentException("Failed to get kafkaOptions from configuration!");
-
-        services.AddMassTransit(options =>
-        {
-            options.UsingInMemory((context, config) =>
-            {
-                config.ConfigureEndpoints(context);
-            });
-
-            options.AddRider(rider =>
-            {
-                rider.AddConsumer<SongConsumer>();
-
-                rider.AddProducer<SongMessage>(kafkaOptions.Topics.SongCreated);
-
-                rider.UsingKafka((context, factory) =>
-                {
-                    factory.Host(kafkaOptions.ServerHost);
-
-                    factory.TopicEndpoint<SongMessage>(kafkaOptions.Topics.SongCreated, kafkaOptions.ConsumerGroups.EmailService, config =>
-                    {
-                        config.ConfigureConsumer<SongConsumer>(context);
-
-                        config.AutoOffsetReset = AutoOffsetReset.Earliest;
-
-                        config.CreateIfMissing();
-                    });
-                });
-
-            });
-        });
+        services.Configure<KafkaConsumerOptions>("SongConsumer", configuration.GetSection($"{KafkaConsumerOptions.SectionName}:SongConsumer"));
 
         return services;
     }

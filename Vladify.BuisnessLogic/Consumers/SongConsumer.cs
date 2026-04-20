@@ -1,5 +1,4 @@
-﻿using MassTransit;
-using Vladify.BuisnessLogic.Interfaces;
+﻿using Vladify.BuisnessLogic.Interfaces;
 using Vladify.BuisnessLogic.Models.Messages;
 
 namespace Vladify.BuisnessLogic.Consumers;

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Vladify.BuisnessLogic;
 using Vladify.BuisnessLogic.Interfaces;
 using Vladify.BuisnessLogic.Models;
 
@@ -9,7 +8,7 @@ namespace Vladify.NotificationAPI
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TestController(TESTProducer producer, INotificationService _notificationService) : ControllerBase
+    public class TestController(KafkaProducer producer, INotificationService _notificationService) : ControllerBase
     {
 
         [HttpPost("/testKafka")]
