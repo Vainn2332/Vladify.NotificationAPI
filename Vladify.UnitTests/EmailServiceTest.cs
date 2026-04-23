@@ -6,10 +6,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using Moq;
-using Vladify.BuisnessLogic;
 using Vladify.BuisnessLogic.Interfaces;
 using Vladify.BuisnessLogic.Models;
 using Vladify.BuisnessLogic.Options;
+using Vladify.BuisnessLogic.Services;
 
 namespace Vladify.UnitTests;
 

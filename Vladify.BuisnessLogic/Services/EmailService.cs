@@ -7,7 +7,7 @@ using Vladify.BuisnessLogic.Interfaces;
 using Vladify.BuisnessLogic.Models;
 using Vladify.BuisnessLogic.Options;
 
-namespace Vladify.BuisnessLogic;
+namespace Vladify.BuisnessLogic.Services;
 
 public class EmailService : IEmailService
 {

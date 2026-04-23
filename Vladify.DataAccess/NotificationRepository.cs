@@ -42,7 +42,7 @@ public class NotificationRepository(IMongoCollection<UserNotificationSettings> _
 
     public async Task<IEnumerable<UserNotificationSettings>> GetEmailSubscribersAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
-        return await _notifications.Find(item => item.NotificationSubscription.Email == true)
+        return await _notifications.Find(item => item.NotificationSubscription.Email)
             .Skip((pageNumber - 1) * pageSize)
             .Limit(pageSize)
             .ToListAsync(cancellationToken);
