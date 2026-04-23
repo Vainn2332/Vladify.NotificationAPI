@@ -46,7 +46,7 @@ public class EmailServiceTest
     public async Task SendToAllUsersAsync_ShouldSendToAll_WhenValidInput(int dataAmount)
     {
         var models = _fixture.CreateMany<UserNotificationSettingsModel>(dataAmount);
-        int expectedAmountOfCalls = models.Where(m => m.NotificationSubscription.Email == true).Count();
+        int expectedAmountOfCalls = models.Where(m => m.NotificationSubscription.IsEmailSubscribed == true).Count();
         var expectedChunks = (int)Math.Ceiling(dataAmount / 20.0);
         _notificationServiceMock
             .SetupSequence(s => s.GetEmailSubscribersAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
@@ -61,18 +61,18 @@ public class EmailServiceTest
     }
 
     [Fact]
-    public async Task SendToAllUsersAsync_ShouldContinueProcessing_WhenOneChunkFails()
+    public async Task SendToAllUsersAsync_ShouldContinueProcessing_WhenOneUserInChunkIsInvalid()
     {
         var models = _fixture.CreateMany<UserNotificationSettingsModel>(40).ToList();
-        models.ForEach(m => m.NotificationSubscription.Email = true);
+        models.ForEach(m => m.NotificationSubscription.IsEmailSubscribed = true);
         _notificationServiceMock
             .SetupSequence(s => s.GetEmailSubscribersAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(models)
             .ReturnsAsync(new List<UserNotificationSettingsModel>());
-        _factoryMock
-            .SetupSequence(f => f.CreateClientAsync(It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new Exception("Failed to Create Smtp Client!"))
-            .ReturnsAsync(_clientMock.Object);
+        _clientMock
+            .SetupSequence(m => m.SendAsync(It.IsAny<MimeMessage>(), It.IsAny<CancellationToken>(), It.IsAny<ITransferProgress>()))
+            .ThrowsAsync(new Exception("SMTP Error"))
+            .ReturnsAsync("Ok");
 
         await _emailService.SendToAllUsersAsync("Sub", "Msg", CancellationToken.None);
 
@@ -83,6 +83,6 @@ public class EmailServiceTest
             It.IsAny<Exception>(),
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()
         ), Times.Once);
-        _clientMock.Verify(m => m.SendAsync(It.IsAny<MimeMessage>(), It.IsAny<CancellationToken>(), It.IsAny<ITransferProgress>()), Times.Exactly(20));
+        _clientMock.Verify(m => m.SendAsync(It.IsAny<MimeMessage>(), It.IsAny<CancellationToken>(), It.IsAny<ITransferProgress>()), Times.Exactly(40));
     }
 }
