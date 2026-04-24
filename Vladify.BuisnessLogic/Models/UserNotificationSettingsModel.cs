@@ -1,6 +1,6 @@
 ﻿namespace Vladify.BuisnessLogic.Models;
 
-public class NotificationModel
+public class UserNotificationSettingsModel
 {
     public required string Id { get; set; }
 

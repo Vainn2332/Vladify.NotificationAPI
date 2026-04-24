@@ -33,7 +33,7 @@ public static class DataAccessExtensions
             var mongoDbOptions = serviceProvider.GetRequiredService<IOptions<MongoDbOptions>>().Value;
             var database = client.GetDatabase(mongoDbOptions.DatabaseName);
 
-            return database.GetCollection<NotificationInfo>(DataAccessConstants.CollectionName);
+            return database.GetCollection<UserNotificationSettings>(DataAccessConstants.CollectionName);
         });
 
         services.AddScoped<INotificationRepository, NotificationRepository>();
