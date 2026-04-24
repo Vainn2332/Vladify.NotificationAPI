@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Vladify.BuisnessLogic.Fakers;
 using Vladify.BuisnessLogic.Interfaces;
 using Vladify.BuisnessLogic.Models;
 
@@ -10,11 +11,13 @@ namespace Vladify.NotificationAPI
     {
         private readonly IEmailService _emailService;
         private readonly INotificationService _notificationService;
+        private readonly UserSettingsSeeder _seeder;
 
-        public TestController(IEmailService emailService, INotificationService notificationService)
+        public TestController(IEmailService emailService, INotificationService notificationService, UserSettingsSeeder seeder)
         {
             _emailService = emailService;
             _notificationService = notificationService;
+            _seeder = seeder;
         }
 
         [HttpPost("/send")]
@@ -23,7 +26,11 @@ namespace Vladify.NotificationAPI
             return _emailService.SendToAllUsersAsync(subject, message, cancellationToken);
         }
 
-
+        [HttpPost("/seed")]
+        public Task Seed(int dataAmount, CancellationToken cancellationToken)
+        {
+            return _seeder.SeedAsync(dataAmount);
+        }
 
         [HttpGet]
         public Task<IEnumerable<UserNotificationSettingsModel>> Get(int pageNumber, int pageSize, CancellationToken cancellationToken)
