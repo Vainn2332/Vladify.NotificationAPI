@@ -73,6 +73,7 @@ public class EmailService : IEmailService
                         client?.Dispose();
                         client = await _factory.CreateClientAsync(cancellationToken);
                     }
+
                     var mail = CreateMessage(notificationInfo.EmailAddress, subject, message);
                     await client.SendAsync(mail, cancellationToken);
                 }
@@ -88,6 +89,7 @@ public class EmailService : IEmailService
             {
                 await client.DisconnectAsync(true, cancellationToken);
             }
+
             client?.Dispose();
         }
     }
