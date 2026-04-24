@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using Vladify.BuisnessLogic.Fakers;
 using Vladify.BuisnessLogic.Interfaces;
 using Vladify.BuisnessLogic.Models;
@@ -12,6 +13,8 @@ namespace Vladify.NotificationAPI
         private readonly IEmailService _emailService;
         private readonly INotificationService _notificationService;
         private readonly UserSettingsSeeder _seeder;
+        private readonly Stopwatch _timer = new Stopwatch();
+
 
         public TestController(IEmailService emailService, INotificationService notificationService, UserSettingsSeeder seeder)
         {
@@ -21,9 +24,12 @@ namespace Vladify.NotificationAPI
         }
 
         [HttpPost("/send")]
-        public Task Send(string message, string subject, CancellationToken cancellationToken)
+        public async Task<long> Send(string message, string subject, CancellationToken cancellationToken)
         {
-            return _emailService.SendToAllUsersAsync(subject, message, cancellationToken);
+            _timer.Start();
+            await _emailService.SendToAllUsersAsync(subject, message, cancellationToken);
+            _timer.Stop();
+            return _timer.ElapsedMilliseconds;
         }
 
         [HttpPost("/seed")]
