@@ -27,23 +27,14 @@ public class EmailService : IEmailService
 
     public async Task SendToAllUsersAsync(string subject, string message, CancellationToken cancellationToken)
     {
-        var parallelOptions = new ParallelOptions()
-        {
-            MaxDegreeOfParallelism = BusinessLogicConstants.MaxAmountOfParallelThreadsForEmailNotification,
-            CancellationToken = cancellationToken
-        };
         IEnumerable<UserNotificationSettingsModel> subscribers;
         int pageNumber = 1;
 
         do
         {
             subscribers = await _notificationService.GetEmailSubscribersAsync(pageNumber++, BusinessLogicConstants.NotificationBatchSize, cancellationToken);
-            var chunks = subscribers.Chunk(BusinessLogicConstants.ChunkSize);
 
-            await Parallel.ForEachAsync(chunks, parallelOptions, async (chunk, cancellationToken) =>
-            {
-                await ProcessNotificationChunkAsync(chunk, subject, message, cancellationToken);
-            });
+            await ProcessNotificationChunkAsync(subscribers, subject, message, cancellationToken);
         }
         while (subscribers.Any());
     }
