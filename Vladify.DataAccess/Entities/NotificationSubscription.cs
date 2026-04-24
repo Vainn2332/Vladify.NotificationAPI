@@ -2,7 +2,7 @@
 
 public class NotificationSubscription
 {
-    public bool Email { get; set; }
+    public bool IsEmailSubscribed { get; set; }
 
-    public bool Push { get; set; }
+    public bool IsPushSubscribed { get; set; }
 }

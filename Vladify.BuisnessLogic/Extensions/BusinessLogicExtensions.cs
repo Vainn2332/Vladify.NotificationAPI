@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Vladify.BuisnessLogic.Factories;
+using Vladify.BuisnessLogic.Fakers;
 using Vladify.BuisnessLogic.Interfaces;
 using Vladify.BuisnessLogic.MapperProfiles;
 using Vladify.BuisnessLogic.Options;
+using Vladify.BuisnessLogic.Services;
 using Vladify.DataAccess.Extensions;
 
 namespace Vladify.BuisnessLogic.Extensions;
@@ -14,6 +17,7 @@ public static class BusinessLogicExtensions
     {
         services
             .AddServices()
+            .AddSeeding()
             .AddMapping()
             .ConfigureOptions(configuration)
             .AddDataAccessLayer(configuration);
@@ -25,6 +29,7 @@ public static class BusinessLogicExtensions
     {
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<ISmtpClientFactory, SmtpClientFactory>();
         services.AddScoped<ISmtpClientFactory, SmtpClientFactory>();
 
         return services;
@@ -48,4 +53,12 @@ public static class BusinessLogicExtensions
 
         return services;
     }
+
+    public static IServiceCollection AddSeeding(this IServiceCollection services)
+    {
+        services.AddTransient<UserSettingsSeeder>();
+
+        return services;
+    }
+
 }

@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Vladify.DataAccess.Entities;
 
-public class NotificationInfo
+public class UserNotificationSettings
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
