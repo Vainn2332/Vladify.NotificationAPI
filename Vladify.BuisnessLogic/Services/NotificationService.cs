@@ -5,7 +5,7 @@ using Vladify.BuisnessLogic.Models;
 using Vladify.DataAccess;
 using Vladify.DataAccess.Entities;
 
-namespace Vladify.BuisnessLogic;
+namespace Vladify.BuisnessLogic.Services;
 
 public class NotificationService(INotificationRepository _repository, IMapper _mapper) : INotificationService
 {

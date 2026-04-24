@@ -5,7 +5,7 @@ using System.Net;
 using Vladify.BuisnessLogic.Interfaces;
 using Vladify.BuisnessLogic.Options;
 
-namespace Vladify.BuisnessLogic;
+namespace Vladify.BuisnessLogic.Factories;
 
 public class SmtpClientFactory : ISmtpClientFactory
 {

@@ -3,9 +3,9 @@ using AutoFixture.AutoMoq;
 using AutoMapper;
 using FluentAssertions;
 using Moq;
-using Vladify.BuisnessLogic;
 using Vladify.BuisnessLogic.Exceptions;
 using Vladify.BuisnessLogic.Models;
+using Vladify.BuisnessLogic.Services;
 using Vladify.DataAccess;
 using Vladify.DataAccess.Entities;
 

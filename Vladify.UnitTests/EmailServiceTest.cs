@@ -6,10 +6,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using Moq;
-using Vladify.BuisnessLogic;
 using Vladify.BuisnessLogic.Interfaces;
 using Vladify.BuisnessLogic.Models;
 using Vladify.BuisnessLogic.Options;
+using Vladify.BuisnessLogic.Services;
 
 namespace Vladify.UnitTests;
 
@@ -45,34 +45,40 @@ public class EmailServiceTest
     [InlineData(81)]
     public async Task SendToAllUsersAsync_ShouldSendToAll_WhenValidInput(int dataAmount)
     {
-        var models = _fixture.CreateMany<UserNotificationSettingsModel>(dataAmount);
-        int expectedAmountOfCalls = models.Where(m => m.NotificationSubscription.Email == true).Count();
+        var models = _fixture.CreateMany<UserNotificationSettingsModel>(dataAmount).ToList();
+        models.ForEach(m => m.NotificationSubscription.IsEmailSubscribed = true);
         var expectedChunks = (int)Math.Ceiling(dataAmount / 20.0);
         _notificationServiceMock
             .SetupSequence(s => s.GetEmailSubscribersAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(models)
             .ReturnsAsync(new List<UserNotificationSettingsModel>());
+        _clientMock.Setup(m => m.IsConnected).Returns(true);
 
         await _emailService.SendToAllUsersAsync("sub", "mes", CancellationToken.None);
 
         _factoryMock.Verify(m => m.CreateClientAsync(It.IsAny<CancellationToken>()), Times.Exactly(expectedChunks));
-        _clientMock.Verify(m => m.SendAsync(It.IsAny<MimeMessage>(), It.IsAny<CancellationToken>(), default), Times.Exactly(expectedAmountOfCalls));
+        _clientMock.Verify(m => m.SendAsync(It.IsAny<MimeMessage>(), It.IsAny<CancellationToken>(), default), Times.Exactly(dataAmount));
         _clientMock.Verify(m => m.DisconnectAsync(true, It.IsAny<CancellationToken>()), Times.Exactly(expectedChunks));
     }
 
     [Fact]
-    public async Task SendToAllUsersAsync_ShouldContinueProcessing_WhenOneChunkFails()
+    public async Task SendToAllUsersAsync_ShouldContinueProcessing_WhenOneUserInChunkIsInvalid()
     {
         var models = _fixture.CreateMany<UserNotificationSettingsModel>(40).ToList();
-        models.ForEach(m => m.NotificationSubscription.Email = true);
+        models.ForEach(m => m.NotificationSubscription.IsEmailSubscribed = true);
         _notificationServiceMock
             .SetupSequence(s => s.GetEmailSubscribersAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(models)
             .ReturnsAsync(new List<UserNotificationSettingsModel>());
-        _factoryMock
-            .SetupSequence(f => f.CreateClientAsync(It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new Exception("Failed to Create Smtp Client!"))
-            .ReturnsAsync(_clientMock.Object);
+        int callCount = 0;
+        _clientMock
+            .Setup(m => m.SendAsync(It.IsAny<MimeMessage>(), It.IsAny<CancellationToken>(), It.IsAny<ITransferProgress>()))
+            .ReturnsAsync(() =>
+            {
+                callCount++;
+                if (callCount == 1) throw new Exception("SMTP Error"); // Падаем только на первом
+                return "Ok";
+            });
 
         await _emailService.SendToAllUsersAsync("Sub", "Msg", CancellationToken.None);
 
@@ -83,6 +89,6 @@ public class EmailServiceTest
             It.IsAny<Exception>(),
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()
         ), Times.Once);
-        _clientMock.Verify(m => m.SendAsync(It.IsAny<MimeMessage>(), It.IsAny<CancellationToken>(), It.IsAny<ITransferProgress>()), Times.Exactly(20));
+        _clientMock.Verify(m => m.SendAsync(It.IsAny<MimeMessage>(), It.IsAny<CancellationToken>(), It.IsAny<ITransferProgress>()), Times.Exactly(40));
     }
 }
