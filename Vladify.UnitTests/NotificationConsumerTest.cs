@@ -27,8 +27,7 @@ public class NotificationConsumerTest
     public async Task Consume_ShouldCallEmailService_WhenValidMessage()
     {
         var message = _fixture.Create<SongCreatedMessage>();
-        var expectedBody = @$"<p>{message.Author} has posted {message.Title} in his album {message.Album}!</p>
-            <p>Don't forget to check it up</p>";
+        var expectedBody = @$"<p>{message.Author} has posted {message.Title} in his album {message.Album}!</p><p>Don't forget to check it up</p>";
         _contextMock.Setup(m => m.Message).Returns(message);
         _emailServiceMock.Setup(m => m.SendToAllUsersAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
