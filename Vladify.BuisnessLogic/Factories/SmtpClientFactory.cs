@@ -25,4 +25,14 @@ public class SmtpClientFactory : ISmtpClientFactory
 
         return client;
     }
+
+    public async Task CheckForConnectionAsync(ISmtpClient client, CancellationToken cancellationToken)
+    {
+        if (!client.IsConnected)
+        {
+            await client.ConnectAsync(_options.SMTPClientUrl, _options.Port, SecureSocketOptions.StartTls, cancellationToken);
+            var creds = new NetworkCredential(_options.SenderEmail, _options.ApplicationPassword);
+            await client.AuthenticateAsync(creds, cancellationToken);
+        }
+    }
 }

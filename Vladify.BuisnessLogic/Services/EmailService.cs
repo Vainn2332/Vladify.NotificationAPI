@@ -1,5 +1,4 @@
-﻿using MailKit.Net.Smtp;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
@@ -61,36 +60,20 @@ public class EmailService : IEmailService
 
     private async Task ProcessNotificationChunkAsync(IEnumerable<UserNotificationSettingsModel> chunk, string subject, string message, CancellationToken cancellationToken)
     {
-        ISmtpClient client = null!;
-        try
+        using var client = await _factory.CreateClientAsync(cancellationToken);
+        foreach (var notificationInfo in chunk)
         {
-            foreach (var notificationInfo in chunk)
+            try
             {
-                try
-                {
-                    if (client == null || !client.IsConnected)
-                    {
-                        client?.Dispose();
-                        client = await _factory.CreateClientAsync(cancellationToken);
-                    }
+                await _factory.CheckForConnectionAsync(client, cancellationToken);
 
-                    var mail = CreateMessage(notificationInfo.EmailAddress, subject, message);
-                    await client.SendAsync(mail, cancellationToken);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error happened while trying to notify user via email");
-                }
+                var mail = CreateMessage(notificationInfo.EmailAddress, subject, message);
+                await client.SendAsync(mail, cancellationToken);
             }
-        }
-        finally
-        {
-            if (client is not null && client.IsConnected)
+            catch (Exception ex)
             {
-                await client.DisconnectAsync(true, cancellationToken);
+                _logger.LogError(ex, "Error happened while trying to notify user via email");
             }
-
-            client?.Dispose();
         }
     }
 }
