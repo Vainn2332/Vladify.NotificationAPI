@@ -16,8 +16,9 @@ public class NotificationConsumer : IConsumer<SongCreatedMessage>
     public Task Consume(ConsumeContext<SongCreatedMessage> context)
     {
         var receivedMessage = context.Message;
-
-        var message = $"<p>У {receivedMessage.Author} в альбоме {receivedMessage.Album} вышла новая песня{receivedMessage.Title}! Успей заценить</p>";
+        var message =
+            @$"<p>{receivedMessage.Author} has posted {receivedMessage.Title} in his album {receivedMessage.Album}!</p>
+            <p>Don't forget to check it up</p>";
 
         return _emailService.SendToAllUsersAsync("Новая песня", message, context.CancellationToken);
     }
