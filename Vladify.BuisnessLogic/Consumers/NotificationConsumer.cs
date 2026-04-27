@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using Vladify.BuisnessLogic.Constants;
 using Vladify.BuisnessLogic.Interfaces;
 using Vladify.BuisnessLogic.Messages;
 
@@ -16,9 +17,7 @@ public class NotificationConsumer : IConsumer<SongCreatedMessage>
     public Task Consume(ConsumeContext<SongCreatedMessage> context)
     {
         var receivedMessage = context.Message;
-        var message =
-            @$"<p>{receivedMessage.Author} has posted {receivedMessage.Title} in his album {receivedMessage.Album}!</p>
-            <p>Don't forget to check it up</p>";
+        var message = string.Format(BusinessLogicConstants.SongCreatedMessageTemplate, receivedMessage.Author, receivedMessage.Title, receivedMessage.Album);
 
         return _emailService.SendToAllUsersAsync("Новая песня", message, context.CancellationToken);
     }
