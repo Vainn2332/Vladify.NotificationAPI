@@ -19,6 +19,6 @@ public class NotificationConsumer : IConsumer<SongCreatedMessage>
         var receivedMessage = context.Message;
         var message = string.Format(BusinessLogicConstants.SongCreatedMessageTemplate, receivedMessage.Author, receivedMessage.Title, receivedMessage.Album);
 
-        return _emailService.SendToAllUsersAsync("Новая песня", message, context.CancellationToken);
+        return _emailService.SendToAllUsersAsync(BusinessLogicConstants.SongCreatedEmailSubject, message, context.CancellationToken);
     }
 }
