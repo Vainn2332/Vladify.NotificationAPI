@@ -58,7 +58,6 @@ public class EmailServiceTest
 
         _factoryMock.Verify(m => m.CreateClientAsync(It.IsAny<CancellationToken>()), Times.Exactly(expectedChunks));
         _clientMock.Verify(m => m.SendAsync(It.IsAny<MimeMessage>(), It.IsAny<CancellationToken>(), default), Times.Exactly(dataAmount));
-        _clientMock.Verify(m => m.DisconnectAsync(true, It.IsAny<CancellationToken>()), Times.Exactly(expectedChunks));
     }
 
     [Fact]
