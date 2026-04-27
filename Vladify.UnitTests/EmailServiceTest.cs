@@ -78,6 +78,7 @@ public class EmailServiceTest
                 if (callCount == 1) throw new Exception("SMTP Error"); // Падаем только на первом
                 return "Ok";
             });
+        _factoryMock.Setup(m => m.CheckForConnectionAsync(It.IsAny<ISmtpClient>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
         await _emailService.SendToAllUsersAsync("Sub", "Msg", CancellationToken.None);
 
