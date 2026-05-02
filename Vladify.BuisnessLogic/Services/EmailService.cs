@@ -65,7 +65,7 @@ public class EmailService : IEmailService
         {
             try
             {
-                await _factory.CheckForConnectionAsync(client, cancellationToken);
+                await _factory.EnsureConnectedAsync(client, cancellationToken);
 
                 var mail = CreateMessage(notificationInfo.EmailAddress, subject, message);
                 await client.SendAsync(mail, cancellationToken);

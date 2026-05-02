@@ -34,7 +34,7 @@ public class SmtpClientFactoryTest
     {
         _clientMock.Setup(c => c.IsConnected).Returns(true);
 
-        await _factory.CheckForConnectionAsync(_clientMock.Object, CancellationToken.None);
+        await _factory.EnsureConnectedAsync(_clientMock.Object, CancellationToken.None);
 
         _clientMock.Verify(m => m.ConnectAsync(
             It.IsAny<string>(),
@@ -48,7 +48,7 @@ public class SmtpClientFactoryTest
     {
         _clientMock.Setup(c => c.IsConnected).Returns(false);
 
-        await _factory.CheckForConnectionAsync(_clientMock.Object, CancellationToken.None);
+        await _factory.EnsureConnectedAsync(_clientMock.Object, CancellationToken.None);
 
         _clientMock.Verify(m => m.ConnectAsync(
             It.IsAny<string>(),

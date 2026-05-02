@@ -26,7 +26,7 @@ public class SmtpClientFactory : ISmtpClientFactory
         return client;
     }
 
-    public async Task CheckForConnectionAsync(ISmtpClient client, CancellationToken cancellationToken)
+    public async Task EnsureConnectedAsync(ISmtpClient client, CancellationToken cancellationToken)
     {
         if (!client.IsConnected)
         {
