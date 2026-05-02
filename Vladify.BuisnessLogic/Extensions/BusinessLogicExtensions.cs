@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Vladify.BuisnessLogic.Consumers;
 using Vladify.BuisnessLogic.Factories;
 using Vladify.BuisnessLogic.Interfaces;
 using Vladify.BuisnessLogic.MapperProfiles;
@@ -17,6 +19,7 @@ public static class BusinessLogicExtensions
         services
             .AddServices()
             .AddMapping()
+            .AddRabbitMQ(configuration)
             .ConfigureOptions(configuration)
             .AddDataAccessLayer(configuration);
 
@@ -47,6 +50,31 @@ public static class BusinessLogicExtensions
     public static IServiceCollection ConfigureOptions(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<EmailNotificationOptions>(configuration.GetSection(EmailNotificationOptions.SectionName));
+        services.Configure<RabbitMqOptions>(configuration.GetSection(RabbitMqOptions.SectionName));
+
+        return services;
+    }
+
+    public static IServiceCollection AddRabbitMQ(this IServiceCollection services, IConfiguration configuration)
+    {
+        var rabbitOptions = configuration.GetSection(RabbitMqOptions.SectionName).Get<RabbitMqOptions>()
+            ?? throw new ArgumentException($"Failed to bind section {RabbitMqOptions.SectionName}!");
+
+        services.AddMassTransit(x =>
+        {
+            x.AddConsumer<NotificationConsumer>();
+
+            x.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(rabbitOptions.ServerHost, h =>
+                {
+                    h.Username(rabbitOptions.Username);
+                    h.Password(rabbitOptions.Password);
+                });
+
+                cfg.ConfigureEndpoints(context);
+            });
+        });
 
         return services;
     }
