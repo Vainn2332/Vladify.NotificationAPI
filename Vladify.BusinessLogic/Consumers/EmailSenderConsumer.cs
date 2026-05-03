@@ -5,11 +5,11 @@ using Vladify.BusinessLogic.Messages;
 
 namespace Vladify.BusinessLogic.Consumers;
 
-public class NotificationConsumer : IConsumer<SongCreatedMessage>
+public class EmailSenderConsumer : IConsumer<SongCreatedMessage>
 {
     private readonly IEmailService _emailService;
 
-    public NotificationConsumer(IEmailService emailService)
+    public EmailSenderConsumer(IEmailService emailService)
     {
         _emailService = emailService;
     }

@@ -13,14 +13,14 @@ public class NotificationConsumerTest
     private readonly IFixture _fixture;
     private readonly Mock<IEmailService> _emailServiceMock;
     private readonly Mock<ConsumeContext<SongCreatedMessage>> _contextMock;
-    private readonly NotificationConsumer _consumer;
+    private readonly EmailSenderConsumer _consumer;
 
     public NotificationConsumerTest()
     {
         _fixture = new Fixture().Customize(new AutoMoqCustomization());
         _emailServiceMock = _fixture.Freeze<Mock<IEmailService>>();
         _contextMock = _fixture.Freeze<Mock<ConsumeContext<SongCreatedMessage>>>();
-        _consumer = _fixture.Create<NotificationConsumer>();
+        _consumer = _fixture.Create<EmailSenderConsumer>();
     }
 
     [Fact]
