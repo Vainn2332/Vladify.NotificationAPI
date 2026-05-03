@@ -6,7 +6,5 @@ public class UserNotificationSettingsRequestModel
 
     public required string EmailAddress { get; set; }
 
-    public string? PhoneNumber { get; set; }
-
     public required NotificationSubscriptionModel NotificationSubscription { get; set; }
 }
