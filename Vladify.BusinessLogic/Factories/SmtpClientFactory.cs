@@ -2,10 +2,10 @@
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using System.Net;
-using Vladify.BuisnessLogic.Interfaces;
-using Vladify.BuisnessLogic.Options;
+using Vladify.BusinessLogic.Interfaces;
+using Vladify.BusinessLogic.Options;
 
-namespace Vladify.BuisnessLogic.Factories;
+namespace Vladify.BusinessLogic.Factories;
 
 public class SmtpClientFactory : ISmtpClientFactory
 {

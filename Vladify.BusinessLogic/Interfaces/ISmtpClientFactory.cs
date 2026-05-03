@@ -1,6 +1,6 @@
 ﻿using MailKit.Net.Smtp;
 
-namespace Vladify.BuisnessLogic.Interfaces;
+namespace Vladify.BusinessLogic.Interfaces;
 
 public interface ISmtpClientFactory
 {

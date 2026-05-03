@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using Vladify.BuisnessLogic.Exceptions;
-using Vladify.BuisnessLogic.Interfaces;
-using Vladify.BuisnessLogic.Models;
+using Vladify.BusinessLogic.Exceptions;
+using Vladify.BusinessLogic.Interfaces;
+using Vladify.BusinessLogic.Models;
 using Vladify.DataAccess;
 using Vladify.DataAccess.Entities;
 
-namespace Vladify.BuisnessLogic.Services;
+namespace Vladify.BusinessLogic.Services;
 
 public class NotificationService(INotificationRepository _repository, IMapper _mapper) : INotificationService
 {

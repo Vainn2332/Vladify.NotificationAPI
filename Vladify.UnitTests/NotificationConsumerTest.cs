@@ -2,9 +2,9 @@
 using AutoFixture.AutoMoq;
 using MassTransit;
 using Moq;
-using Vladify.BuisnessLogic.Consumers;
-using Vladify.BuisnessLogic.Interfaces;
-using Vladify.BuisnessLogic.Messages;
+using Vladify.BusinessLogic.Interfaces;
+using Vladify.BusinessLogic.Messages;
+using Vladify.BusinessLogic.Consumers;
 
 namespace Vladify.UnitTests;
 
