@@ -5,8 +5,8 @@ using MailKit.Security;
 using Microsoft.Extensions.Options;
 using Moq;
 using System.Net;
-using Vladify.BuisnessLogic.Factories;
-using Vladify.BuisnessLogic.Options;
+using Vladify.BusinessLogic.Factories;
+using Vladify.BusinessLogic.Options;
 
 namespace Vladify.UnitTests;
 

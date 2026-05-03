@@ -2,12 +2,12 @@
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
-using Vladify.BuisnessLogic.Constants;
-using Vladify.BuisnessLogic.Interfaces;
-using Vladify.BuisnessLogic.Models;
-using Vladify.BuisnessLogic.Options;
+using Vladify.BusinessLogic.Constants;
+using Vladify.BusinessLogic.Interfaces;
+using Vladify.BusinessLogic.Models;
+using Vladify.BusinessLogic.Options;
 
-namespace Vladify.BuisnessLogic.Services;
+namespace Vladify.BusinessLogic.Services;
 
 public class EmailService : IEmailService
 {

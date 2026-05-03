@@ -1,4 +1,4 @@
-﻿namespace Vladify.BuisnessLogic.Messages;
+﻿namespace Vladify.BusinessLogic.Messages;
 
 public class SongCreatedMessage
 {

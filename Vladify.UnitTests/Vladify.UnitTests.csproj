@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Vladify.BuisnessLogic\Vladify.BuisnessLogic.csproj" />
+    <ProjectReference Include="..\Vladify.BusinessLogic\Vladify.BusinessLogic.csproj" />
     <ProjectReference Include="..\Vladify.DataAccess\Vladify.DataAccess.csproj" />
   </ItemGroup>
 

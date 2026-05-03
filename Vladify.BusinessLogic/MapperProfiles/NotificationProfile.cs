@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Vladify.BuisnessLogic.Models;
+using Vladify.BusinessLogic.Models;
 using Vladify.DataAccess.Entities;
 
-namespace Vladify.BuisnessLogic.MapperProfiles;
+namespace Vladify.BusinessLogic.MapperProfiles;
 
 public class NotificationProfile : Profile
 {

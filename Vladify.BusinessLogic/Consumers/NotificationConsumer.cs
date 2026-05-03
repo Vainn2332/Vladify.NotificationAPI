@@ -1,9 +1,9 @@
 ﻿using MassTransit;
-using Vladify.BuisnessLogic.Constants;
-using Vladify.BuisnessLogic.Interfaces;
-using Vladify.BuisnessLogic.Messages;
+using Vladify.BusinessLogic.Constants;
+using Vladify.BusinessLogic.Interfaces;
+using Vladify.BusinessLogic.Messages;
 
-namespace Vladify.BuisnessLogic.Consumers;
+namespace Vladify.BusinessLogic.Consumers;
 
 public class NotificationConsumer : IConsumer<SongCreatedMessage>
 {

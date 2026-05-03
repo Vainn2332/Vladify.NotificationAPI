@@ -1,4 +1,4 @@
-﻿namespace Vladify.BuisnessLogic.Options;
+﻿namespace Vladify.BusinessLogic.Options;
 
 public class EmailNotificationOptions
 {

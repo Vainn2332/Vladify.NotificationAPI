@@ -1,4 +1,4 @@
-﻿namespace Vladify.BuisnessLogic.Constants;
+﻿namespace Vladify.BusinessLogic.Constants;
 
 public static class BusinessLogicConstants
 {

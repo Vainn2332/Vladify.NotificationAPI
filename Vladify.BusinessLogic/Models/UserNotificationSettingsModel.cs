@@ -1,4 +1,4 @@
-﻿namespace Vladify.BuisnessLogic.Models;
+﻿namespace Vladify.BusinessLogic.Models;
 
 public class UserNotificationSettingsModel
 {

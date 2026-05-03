@@ -1,7 +1,7 @@
 ﻿
-using Vladify.BuisnessLogic.Models;
+using Vladify.BusinessLogic.Models;
 
-namespace Vladify.BuisnessLogic.Interfaces;
+namespace Vladify.BusinessLogic.Interfaces;
 
 public interface INotificationService
 {

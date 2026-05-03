@@ -2,15 +2,15 @@
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Vladify.BuisnessLogic.Consumers;
-using Vladify.BuisnessLogic.Factories;
-using Vladify.BuisnessLogic.Interfaces;
-using Vladify.BuisnessLogic.MapperProfiles;
-using Vladify.BuisnessLogic.Options;
-using Vladify.BuisnessLogic.Services;
+using Vladify.BusinessLogic.Consumers;
+using Vladify.BusinessLogic.Factories;
+using Vladify.BusinessLogic.Interfaces;
+using Vladify.BusinessLogic.MapperProfiles;
+using Vladify.BusinessLogic.Options;
+using Vladify.BusinessLogic.Services;
 using Vladify.DataAccess.Extensions;
 
-namespace Vladify.BuisnessLogic.Extensions;
+namespace Vladify.BusinessLogic.Extensions;
 
 public static class BusinessLogicExtensions
 {

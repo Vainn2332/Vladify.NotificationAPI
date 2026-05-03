@@ -1,5 +1,5 @@
 using Scalar.AspNetCore;
-using Vladify.BuisnessLogic.Extensions;
+using Vladify.BusinessLogic.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
