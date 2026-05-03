@@ -2,20 +2,20 @@
 using AutoFixture.AutoMoq;
 using MassTransit;
 using Moq;
+using Vladify.BusinessLogic.Consumers;
 using Vladify.BusinessLogic.Interfaces;
 using Vladify.BusinessLogic.Messages;
-using Vladify.BusinessLogic.Consumers;
 
 namespace Vladify.UnitTests;
 
-public class NotificationConsumerTest
+public class EmailSenderConsumerTest
 {
     private readonly IFixture _fixture;
     private readonly Mock<IEmailService> _emailServiceMock;
     private readonly Mock<ConsumeContext<SongCreatedMessage>> _contextMock;
     private readonly EmailSenderConsumer _consumer;
 
-    public NotificationConsumerTest()
+    public EmailSenderConsumerTest()
     {
         _fixture = new Fixture().Customize(new AutoMoqCustomization());
         _emailServiceMock = _fixture.Freeze<Mock<IEmailService>>();
