@@ -17,7 +17,7 @@ public class NotificationProfile : Profile
            .ForMember(dest => dest.Id, opt => opt.Ignore());
 
         CreateMap<UserCreatedMessage, UserNotificationSettingsRequestModel>()
-            .ForMember(dest => dest.NotificationSubscription, opt => opt.Ignore());
+            .ForMember(dest => dest.NotificationSubscription, opt => opt.MapFrom(src => new NotificationSubscriptionModel()));
 
     }
 }
