@@ -63,6 +63,7 @@ public static class BusinessLogicExtensions
         services.AddMassTransit(x =>
         {
             x.AddConsumer<EmailSenderConsumer>();
+            x.AddConsumer<CreateUserNotificationSettingsConsumer>();
 
             x.UsingRabbitMq((context, cfg) =>
             {
