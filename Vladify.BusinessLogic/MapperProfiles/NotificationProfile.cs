@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Vladify.BusinessLogic.Messages;
 using Vladify.BusinessLogic.Models;
 using Vladify.DataAccess.Entities;
 
@@ -14,5 +15,9 @@ public class NotificationProfile : Profile
 
         CreateMap<UserNotificationSettingsRequestModel, UserNotificationSettings>()
            .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+        CreateMap<UserCreatedMessage, UserNotificationSettingsRequestModel>()
+            .ForMember(dest => dest.NotificationSubscription, opt => opt.Ignore());
+
     }
 }
