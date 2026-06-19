@@ -31,7 +31,7 @@ public class EmailService : IEmailService
             MaxDegreeOfParallelism = BusinessLogicConstants.MaxAmountOfParallelThreadsForEmailNotification,
             CancellationToken = cancellationToken
         };
-        IEnumerable<UserNotificationSettingsModel> subscribers;
+        List<UserNotificationSettingsModel> subscribers;
         int pageNumber = 1;
 
         do
