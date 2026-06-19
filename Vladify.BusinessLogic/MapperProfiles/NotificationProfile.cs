@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Vladify.BusinessLogic.Messages;
 using Vladify.BusinessLogic.Models;
+using Vladify.DataAccess.Dto;
 using Vladify.DataAccess.Entities;
 
 namespace Vladify.BusinessLogic.MapperProfiles;
@@ -19,5 +20,6 @@ public class NotificationProfile : Profile
         CreateMap<UserCreatedMessage, UserNotificationSettingsRequestModel>()
             .ForMember(dest => dest.NotificationSubscription, opt => opt.MapFrom(src => new NotificationSubscriptionModel()));
 
+        CreateMap<UserNotificationSubscriptionPatchRequestModel, PatchSubscriptionDto>();
     }
 }

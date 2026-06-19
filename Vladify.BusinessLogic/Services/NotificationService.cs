@@ -64,9 +64,9 @@ public class NotificationService(INotificationRepository _repository, IMapper _m
         return _mapper.Map<List<UserNotificationSettingsModel>>(subscribers);
     }
 
-    public Task PatchSubscriptionAsync(UserNotificationSubscriptionUpdateRequestModel UpdateRequestModel, CancellationToken cancellationToken)
+    public Task PatchSubscriptionAsync(UserNotificationSubscriptionPatchRequestModel patchRequestModel, CancellationToken cancellationToken)
     {
-        var entity = _mapper.Map<PatchSubscriptionDto>(UpdateRequestModel);
+        var entity = _mapper.Map<PatchSubscriptionDto>(patchRequestModel);
 
         return _repository.UpdateEmailSubscriptionAsync(entity, cancellationToken);
     }
