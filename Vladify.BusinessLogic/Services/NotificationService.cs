@@ -68,6 +68,6 @@ public class NotificationService(INotificationRepository _repository, IMapper _m
     {
         var entity = _mapper.Map<PatchSubscriptionDto>(patchRequestModel);
 
-        return _repository.UpdateEmailSubscriptionAsync(entity, cancellationToken);
+        return _repository.PatchSubscriptionAsync(entity, cancellationToken);
     }
 }
