@@ -23,11 +23,11 @@ public class NotificationService(INotificationRepository _repository, IMapper _m
         return _mapper.Map<UserNotificationSettingsModel>(newNotification);
     }
 
-    public async Task<IEnumerable<UserNotificationSettingsModel>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
+    public async Task<List<UserNotificationSettingsModel>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         var notifications = await _repository.GetAllAsync(pageNumber, pageSize, cancellationToken);
 
-        return _mapper.Map<IEnumerable<UserNotificationSettingsModel>>(notifications);
+        return _mapper.Map<List<UserNotificationSettingsModel>>(notifications);
     }
 
     public async Task<UserNotificationSettingsModel?> GetByIdAsync(string id, CancellationToken cancellationToken)
@@ -56,10 +56,10 @@ public class NotificationService(INotificationRepository _repository, IMapper _m
         await _repository.DeleteAsync(id, cancellationToken);
     }
 
-    public async Task<IEnumerable<UserNotificationSettingsModel>> GetEmailSubscribersAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
+    public async Task<List<UserNotificationSettingsModel>> GetEmailSubscribersAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         var subscribers = await _repository.GetEmailSubscribersAsync(pageNumber, pageSize, cancellationToken);
 
-        return _mapper.Map<IEnumerable<UserNotificationSettingsModel>>(subscribers);
+        return _mapper.Map<List<UserNotificationSettingsModel>>(subscribers);
     }
 }

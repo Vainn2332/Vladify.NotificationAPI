@@ -31,7 +31,7 @@ public class EmailService : IEmailService
             MaxDegreeOfParallelism = BusinessLogicConstants.MaxAmountOfParallelThreadsForEmailNotification,
             CancellationToken = cancellationToken
         };
-        IEnumerable<UserNotificationSettingsModel> subscribers;
+        List<UserNotificationSettingsModel> subscribers;
         int pageNumber = 1;
 
         do
@@ -44,7 +44,7 @@ public class EmailService : IEmailService
                 await ProcessNotificationChunkAsync(chunk, subject, message, cancellationToken);
             });
         }
-        while (subscribers.Any());
+        while (subscribers.Count > 0);
     }
 
     private MimeMessage CreateMessage(string recepientEmail, string subject, string message)
