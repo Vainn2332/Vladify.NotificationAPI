@@ -44,7 +44,7 @@ public class EmailService : IEmailService
                 await ProcessNotificationChunkAsync(chunk, subject, message, cancellationToken);
             });
         }
-        while (subscribers.Count > 0);
+        while (subscribers.Any());
     }
 
     private MimeMessage CreateMessage(string recepientEmail, string subject, string message)
