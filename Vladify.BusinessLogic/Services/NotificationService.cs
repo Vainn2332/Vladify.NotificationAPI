@@ -3,6 +3,7 @@ using Vladify.BusinessLogic.Exceptions;
 using Vladify.BusinessLogic.Interfaces;
 using Vladify.BusinessLogic.Models;
 using Vladify.DataAccess;
+using Vladify.DataAccess.Dto;
 using Vladify.DataAccess.Entities;
 
 namespace Vladify.BusinessLogic.Services;
@@ -63,8 +64,10 @@ public class NotificationService(INotificationRepository _repository, IMapper _m
         return _mapper.Map<List<UserNotificationSettingsModel>>(subscribers);
     }
 
-    public Task UpdateEmailSubscriptionAsync(string id, bool isEmailSubscribed, CancellationToken cancellationToken)
+    public Task PatchSubscriptionAsync(UserNotificationSubscriptionUpdateRequestModel UpdateRequestModel, CancellationToken cancellationToken)
     {
-        return _repository.UpdateEmailSubscriptionAsync(id, isEmailSubscribed, cancellationToken);
+        var entity = _mapper.Map<PatchSubscriptionDto>(UpdateRequestModel);
+
+        return _repository.UpdateEmailSubscriptionAsync(entity, cancellationToken);
     }
 }

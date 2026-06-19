@@ -11,5 +11,5 @@ public interface INotificationService
     public Task<List<UserNotificationSettingsModel>> GetEmailSubscribersAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
     public Task<UserNotificationSettingsModel> UpdateAsync(UserNotificationSettingsModel UserNotificationSettingsModel, CancellationToken cancellationToken);
     public Task DeleteAsync(string id, CancellationToken cancellationToken);
-    public Task UpdateEmailSubscriptionAsync(string id, bool isEmailSubscribed, CancellationToken cancellationToken);
+    public Task PatchSubscriptionAsync(UserNotificationSubscriptionUpdateRequestModel UpdateRequestModel, CancellationToken cancellationToken);
 }
