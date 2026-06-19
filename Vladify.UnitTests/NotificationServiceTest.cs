@@ -66,11 +66,11 @@ public class NotificationServiceTest
         _repositoryMock.Setup(m => m.GetAllAsync(pageNumber, notifications.Count(), It.IsAny<CancellationToken>())).ReturnsAsync(notifications);
         _mapperMock.Setup(m => m.Map<List<UserNotificationSettingsModel>>(notifications)).Returns(expectedModels);
 
-        var result = await _notificationService.GetAllAsync(pageNumber, notifications.Count(), CancellationToken.None);
+        var result = await _notificationService.GetAllAsync(pageNumber, notifications.Count, CancellationToken.None);
 
         result.Should().NotBeNull();
         result.Should().BeAssignableTo<List<UserNotificationSettingsModel>>();
-        result.Count().Should().Be(expectedModels.Count());
+        result.Count.Should().Be(expectedModels.Count);
         _repositoryMock.Verify(m => m.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
