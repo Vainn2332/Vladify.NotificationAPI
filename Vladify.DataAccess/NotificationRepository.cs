@@ -52,7 +52,6 @@ public class NotificationRepository(IMongoCollection<UserNotificationSettings> _
     public Task PatchSubscriptionAsync(PatchSubscriptionDto patchSubscriptionDto, CancellationToken cancellationToken)
     {
         var updateBuilder = Builders<UserNotificationSettings>.Update;
-        //list for future properties
         var updates = new List<UpdateDefinition<UserNotificationSettings>>();
 
         if (patchSubscriptionDto.IsEmailSubscribed is not null)
