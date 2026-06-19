@@ -12,7 +12,7 @@ public class NotificationRepository(IMongoCollection<UserNotificationSettings> _
         return notification;
     }
 
-    public async Task<IEnumerable<UserNotificationSettings>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
+    public async Task<List<UserNotificationSettings>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         return await _notifications.Find(item => true)
             .Skip((pageNumber - 1) * pageSize)
@@ -40,7 +40,7 @@ public class NotificationRepository(IMongoCollection<UserNotificationSettings> _
         return _notifications.DeleteOneAsync(item => item.Id == id, cancellationToken);
     }
 
-    public async Task<IEnumerable<UserNotificationSettings>> GetEmailSubscribersAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
+    public async Task<List<UserNotificationSettings>> GetEmailSubscribersAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         return await _notifications.Find(item => item.NotificationSubscription.IsEmailSubscribed)
             .Skip((pageNumber - 1) * pageSize)
