@@ -1,4 +1,5 @@
-﻿using Vladify.DataAccess.Entities;
+﻿using Vladify.DataAccess.Dto;
+using Vladify.DataAccess.Entities;
 
 namespace Vladify.DataAccess;
 
@@ -11,5 +12,5 @@ public interface INotificationRepository
     public Task<UserNotificationSettings?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken);
     public Task UpdateAsync(UserNotificationSettings notification, CancellationToken cancellationToken);
     public Task DeleteAsync(string id, CancellationToken cancellationToken);
-    public Task UpdateEmailSubscriptionAsync(string id, bool isEmailSubscribed, CancellationToken cancellationToken);
+    public Task PatchSubscriptionAsync(PatchSubscriptionDto patchSubscriptionDto, CancellationToken cancellationToken);
 }
