@@ -11,4 +11,5 @@ public interface INotificationRepository
     public Task<UserNotificationSettings?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken);
     public Task UpdateAsync(UserNotificationSettings notification, CancellationToken cancellationToken);
     public Task DeleteAsync(string id, CancellationToken cancellationToken);
+    public Task UpdateEmailSubscriptionAsync(string id, bool isEmailSubscribed, CancellationToken cancellationToken);
 }
