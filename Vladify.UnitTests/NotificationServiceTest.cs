@@ -61,15 +61,15 @@ public class NotificationServiceTest
     public async Task GetNotifications_Should_ReturnNotifications_WhenValidInput()
     {
         var pageNumber = _fixture.Create<int>();
-        var notifications = _fixture.Create<IEnumerable<UserNotificationSettings>>();
-        var expectedModels = _fixture.Create<IEnumerable<UserNotificationSettingsModel>>();
+        var notifications = _fixture.Create<List<UserNotificationSettings>>();
+        var expectedModels = _fixture.Create<List<UserNotificationSettingsModel>>();
         _repositoryMock.Setup(m => m.GetAllAsync(pageNumber, notifications.Count(), It.IsAny<CancellationToken>())).ReturnsAsync(notifications);
-        _mapperMock.Setup(m => m.Map<IEnumerable<UserNotificationSettingsModel>>(notifications)).Returns(expectedModels);
+        _mapperMock.Setup(m => m.Map<List<UserNotificationSettingsModel>>(notifications)).Returns(expectedModels);
 
         var result = await _notificationService.GetAllAsync(pageNumber, notifications.Count(), CancellationToken.None);
 
         result.Should().NotBeNull();
-        result.Should().BeAssignableTo<IEnumerable<UserNotificationSettingsModel>>();
+        result.Should().BeAssignableTo<List<UserNotificationSettingsModel>>();
         result.Count().Should().Be(expectedModels.Count());
         _repositoryMock.Verify(m => m.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
     }
