@@ -47,4 +47,12 @@ public class NotificationRepository(IMongoCollection<UserNotificationSettings> _
             .Limit(pageSize)
             .ToListAsync(cancellationToken);
     }
+
+    public Task UpdateEmailSubscriptionAsync(string id, bool isEmailSubscribed, CancellationToken cancellationToken)
+    {
+        var updateDefinition = Builders<UserNotificationSettings>.Update
+                .Set(item => item.NotificationSubscription.IsEmailSubscribed, isEmailSubscribed);
+
+        return _notifications.UpdateOneAsync(item => item.Id == id, updateDefinition, cancellationToken: cancellationToken);
+    }
 }
