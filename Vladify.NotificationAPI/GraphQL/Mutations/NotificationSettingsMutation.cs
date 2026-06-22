@@ -12,8 +12,10 @@ public class NotificationSettingsMutation(INotificationService _notificationServ
         return _notificationService.UpdateAsync(input, cancellationToken);
     }
 
-    public Task PatchSubscriptionAsync(UserNotificationSubscriptionPatchRequestModel input, CancellationToken cancellationToken)
+    public async Task<bool> PatchSubscriptionAsync(UserNotificationSubscriptionPatchRequestModel input, CancellationToken cancellationToken)
     {
-        return _notificationService.PatchSubscriptionAsync(input, cancellationToken);
+        await _notificationService.PatchSubscriptionAsync(input, cancellationToken);
+
+        return true;
     }
 }
