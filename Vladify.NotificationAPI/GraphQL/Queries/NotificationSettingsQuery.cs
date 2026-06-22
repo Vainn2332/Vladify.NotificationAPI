@@ -1,9 +1,10 @@
 ﻿using Vladify.BusinessLogic.Interfaces;
 using Vladify.BusinessLogic.Models;
+using Vladify.NotificationAPI.Constants;
 
 namespace Vladify.NotificationAPI.GraphQL.Queries;
 
-[ExtendObjectType("Query")]
+[ExtendObjectType(GraphQlConstants.QueryName)]
 public class NotificationSettingsQuery(INotificationService _notificationService)
 {
     public Task<UserNotificationSettingsModel?> GetNotificationByIdAsync(string id, CancellationToken cancellationToken)
