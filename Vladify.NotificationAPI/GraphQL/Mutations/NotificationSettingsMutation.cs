@@ -1,9 +1,10 @@
 ﻿using Vladify.BusinessLogic.Interfaces;
 using Vladify.BusinessLogic.Models;
 
-namespace Vladify.NotificationAPI.GraphQL;
+namespace Vladify.NotificationAPI.GraphQL.Mutations;
 
-public class Mutation(INotificationService _notificationService)
+[ExtendObjectType("Mutation")]
+public class NotificationSettingsMutation(INotificationService _notificationService)
 {
     public Task<UserNotificationSettingsModel> UpdateNotificationSettingsAsync(UserNotificationSettingsModel input, CancellationToken cancellationToken)
     {

@@ -1,5 +1,6 @@
 ﻿using Vladify.BusinessLogic.Extensions;
-using Vladify.NotificationAPI.GraphQL;
+using Vladify.NotificationAPI.GraphQL.Mutations;
+using Vladify.NotificationAPI.GraphQL.Queries;
 
 namespace Vladify.NotificationAPI.Extensions;
 
@@ -16,8 +17,10 @@ public static class ApiExtensions
     {
         services
            .AddGraphQLServer()
-           .AddQueryType<Query>()
-           .AddMutationType<Mutation>();
+           .AddQueryType(q => q.Name("Query"))
+           .AddMutationType(q => q.Name("Mutation"))
+           .AddTypeExtension<NotificationSettingsQuery>()
+           .AddTypeExtension<NotificationSettingsMutation>();
 
         return services;
     }
