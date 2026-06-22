@@ -19,6 +19,7 @@ public static class ApiExtensions
     {
         services
            .AddGraphQLServer()
+           .AddAuthorization()
            .AddQueryType(q => q.Name(GraphQlConstants.QueryName))
            .AddMutationType(q => q.Name(GraphQlConstants.MutationName))
            .AddTypeExtension<NotificationSettingsQuery>()
