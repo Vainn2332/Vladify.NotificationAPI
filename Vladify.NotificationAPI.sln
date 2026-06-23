@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 18
-VisualStudioVersion = 18.5.11723.231 stable
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37216.2 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vladify.NotificationAPI", "Vladify.NotificationAPI\Vladify.NotificationAPI.csproj", "{CB75F0BD-0C98-4C72-ABFB-13914410A4DB}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vladify.DataAccess", "Vladify.DataAccess\Vladify.DataAccess.csproj", "{8DC8D999-3FEE-4F1F-B22F-C51DC92EE1D2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vladify.UnitTests", "Vladify.UnitTests\Vladify.UnitTests.csproj", "{92E8A40A-BE05-4F43-B07D-96CEAC1D81E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vladify.IntegrationTests", "Vladify.IntegrationTests\Vladify.IntegrationTests.csproj", "{A979D3FD-2B00-4B88-A4E5-25E4BB537BE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{92E8A40A-BE05-4F43-B07D-96CEAC1D81E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92E8A40A-BE05-4F43-B07D-96CEAC1D81E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92E8A40A-BE05-4F43-B07D-96CEAC1D81E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A979D3FD-2B00-4B88-A4E5-25E4BB537BE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A979D3FD-2B00-4B88-A4E5-25E4BB537BE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A979D3FD-2B00-4B88-A4E5-25E4BB537BE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A979D3FD-2B00-4B88-A4E5-25E4BB537BE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
