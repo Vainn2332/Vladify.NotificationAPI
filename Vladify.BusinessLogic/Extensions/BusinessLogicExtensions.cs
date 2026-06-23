@@ -49,8 +49,23 @@ public static class BusinessLogicExtensions
 
     public static IServiceCollection ConfigureOptions(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<EmailNotificationOptions>(configuration.GetSection(EmailNotificationOptions.SectionName));
-        services.Configure<RabbitMqOptions>(configuration.GetSection(RabbitMqOptions.SectionName));
+        services
+            .AddOptions<Auth0Options>()
+            .BindConfiguration(Auth0Options.SectionName)
+            .ValidateOnStart()
+            .ValidateDataAnnotations();
+
+        services
+            .AddOptions<EmailNotificationOptions>()
+            .BindConfiguration(EmailNotificationOptions.SectionName)
+            .ValidateOnStart()
+            .ValidateDataAnnotations();
+
+        services
+            .AddOptions<RabbitMqOptions>()
+            .BindConfiguration(RabbitMqOptions.SectionName)
+            .ValidateOnStart()
+            .ValidateDataAnnotations();
 
         return services;
     }
