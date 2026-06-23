@@ -50,6 +50,23 @@ jobs:
 
     - name: Run Tests
       run: dotnet test --no-build --configuration Release --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+      env:
+        MongoDbOptions__ConnectionString: ${{ secrets.MONGO_CONNECTION_STRING }}
+        MongoDbOptions__DatabaseName: ${{secrets.MONGO_DB_NAME}}
+
+        EmailNotificationOptions__ApplicationPassword: ${{ secrets.EMAIL_APP_PASSWORD }}
+        EmailNotificationOptions__SenderEmail: ${{ secrets.EMAIL_SENDER_MAIL }}
+        EmailNotificationOptions__SenderName: "no-reply@vladify.com"
+        EmailNotificationOptions__Port: "222"
+        EmailNotificationOptions__SMTPClientUrl: ${{ secrets.SMTP_URL}}
+        
+        RabbitMqOptions__ServerHost: "localhost"
+        RabbitMqOptions__Username: ${{ secrets.RABBIT_USERNAME}}
+        RabbitMqOptions__Password: ${{ secrets.RABBIT_PASSWORD }}
+        
+        Auth0Options__Domain: ${{ secrets.AUTH0_DOMAIN }}
+        Auth0Options__Audience: ${{ secrets.AUTH0_AUDIENCE }}
+
 
     - name: End Analysis
       env:
