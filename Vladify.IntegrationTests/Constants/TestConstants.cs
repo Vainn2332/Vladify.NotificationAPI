@@ -1,4 +1,4 @@
-﻿namespace Vladify.IntegrationTests;
+﻿namespace Vladify.IntegrationTests.Constants;
 
 public static class TestConstants
 {
@@ -6,7 +6,7 @@ public static class TestConstants
 
     public const string Issuer = "testIssuer";
 
-    public const string TestSecretKey = "superMegaTestSecretKey";
+    public const string TestSecretKey = "superMegaTestSecretKeyThatMustBeVeryLargeInOrderNotToThrowArgumentException";
 
     public const string BaseClaimNamespace = "https://vladify.com/";
 
