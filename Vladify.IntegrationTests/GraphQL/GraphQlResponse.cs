@@ -1,12 +1,8 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Vladify.IntegrationTests.GraphQL;
+﻿namespace Vladify.IntegrationTests.GraphQL;
 
 public class GraphQlResponse<TClass>
 {
-    [JsonPropertyName("data")]
-    public required TClass Data { get; set; }
+    public TClass? Data { get; set; }
 
-    [JsonPropertyName("errors")]
-    public required GraphQlErrorMessage[] Errors { get; set; } = [];
+    public GraphQlErrorMessage[]? Errors { get; set; } = [];
 }
