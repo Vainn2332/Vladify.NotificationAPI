@@ -2,10 +2,10 @@
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Moq;
@@ -13,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Testcontainers.MongoDb;
+using Vladify.IntegrationTests.Constants;
 
 namespace Vladify.IntegrationTests;
 
@@ -34,6 +35,15 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
 
         Factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
+            builder.ConfigureAppConfiguration((context, config) =>
+            {
+                config.AddInMemoryCollection(new Dictionary<string, string?>
+                {
+                    ["MongoDbOptions:ConnectionString"] = _mongoDbContainer.GetConnectionString(),
+                    ["MongoDbOptions:DatabaseName"] = "TestDb"
+                });
+            });
+
             builder.ConfigureServices(services =>
             {
                 ConfigureTestServices(services);
@@ -68,14 +78,14 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
         }
     }
 
-    public string GenerateTestJWT()
+    public string GenerateTestJWT(string email)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TestConstants.TestSecretKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var claims = new List<Claim>
         {
-            new Claim(TestConstants.CustomEmailClaimName,_fixture.Create<string>())
+            new Claim(TestConstants.CustomEmailClaimName,email)
         };
 
         var token = new JwtSecurityToken(
