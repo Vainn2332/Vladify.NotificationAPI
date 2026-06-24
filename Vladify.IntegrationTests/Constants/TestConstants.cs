@@ -12,7 +12,7 @@ public static class TestConstants
 
     public const string CustomEmailClaimName = $"{BaseClaimNamespace}email";
 
-    public const string UserNotificationSettingsCollectionName = "UserNotificationSettingsCollection";
+    public const string UserNotificationSettingsCollectionName = "Notifications";
 
     public const string GraphQlRoute = "/graphql";
 }
