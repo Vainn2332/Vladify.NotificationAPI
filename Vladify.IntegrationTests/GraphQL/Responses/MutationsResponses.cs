@@ -1,12 +1,12 @@
 ﻿using System.Text.Json.Serialization;
-using Vladify.BusinessLogic.Models;
+using static Vladify.IntegrationTests.GraphQL.ClientDtos.ClientDtos;
 
 namespace Vladify.IntegrationTests.GraphQL.Responses;
 
 public class MutationsResponses
 {
-    public record UpdateNotificationSettingsMutationResponse(
-    [property: JsonPropertyName("updateNotificationSettings")] UserNotificationSettingsModel Result
+    public record PartialUpdateNotificationSettingsMutationResponse(
+    [property: JsonPropertyName("updateNotificationSettings")] PartialSubscriberDto Result
     );
 
     public record PatchSubscriptionMutationResponse(
