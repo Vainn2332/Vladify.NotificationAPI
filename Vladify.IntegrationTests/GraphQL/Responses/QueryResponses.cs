@@ -11,10 +11,10 @@ public class QueryResponses
     );
 
     public record NotificationsQueryResponse(
-        [property: JsonPropertyName("notifications")] List<UserNotificationSettingsModel> Result
+        [property: JsonPropertyName("notifications")] UserNotificationSettingsModel[] Result
     );
 
     public record PartialEmailSubscribersQueryResponse(
-        [property: JsonPropertyName("emailSubscribers")] List<PartialSubscriberDto> Result
+        [property: JsonPropertyName("emailSubscribers")] PartialSubscriberDto[] Result
     );
 }

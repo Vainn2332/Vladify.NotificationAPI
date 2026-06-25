@@ -1,8 +1,8 @@
 ﻿namespace Vladify.IntegrationTests.GraphQL;
 
-public class GraphQlResponse<TClass>
+public class GraphQlResponse<TQueryResponse>
 {
-    public TClass? Data { get; set; }
+    public TQueryResponse? Data { get; set; }
 
     public GraphQlErrorMessage[]? Errors { get; set; } = [];
 }

@@ -174,6 +174,6 @@ public class GraphQlNotificationSettingsQueryTest
 
         result!.Errors.Should().BeEmpty();
         result!.Data!.Result.Should().NotBeNull();
-        result!.Data.Result.Count.Should().Be(1);
+        result!.Data.Result.Length.Should().Be(1);
     }
 }
