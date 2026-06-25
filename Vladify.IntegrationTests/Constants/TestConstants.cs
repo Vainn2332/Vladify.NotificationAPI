@@ -6,7 +6,8 @@ public static class TestConstants
 
     public const string Issuer = "testIssuer";
 
-    public const string TestSecretKey = "superMegaTestSecretKeyThatMustBeVeryLargeInOrderNotToThrowArgumentException";
+    private static readonly string testSecretKey = Environment.GetEnvironmentVariable("TEST_JWT_SECRETKEY")
+            ?? throw new ArgumentException("Failed to get test jwt secret key");
 
     public const string BaseClaimNamespace = "https://vladify.com/";
 
