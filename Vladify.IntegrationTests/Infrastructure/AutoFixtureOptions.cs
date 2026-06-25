@@ -3,7 +3,7 @@ using MongoDB.Bson;
 using System.Net.Mail;
 using Vladify.DataAccess.Entities;
 
-namespace Vladify.IntegrationTests;
+namespace Vladify.IntegrationTests.Infrastructure;
 
 public static class AutoFixtureOptions
 {

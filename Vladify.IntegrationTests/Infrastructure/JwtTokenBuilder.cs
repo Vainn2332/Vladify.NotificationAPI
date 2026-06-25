@@ -4,7 +4,7 @@ using System.Security.Claims;
 using System.Text;
 using Vladify.IntegrationTests.Constants;
 
-namespace Vladify.IntegrationTests;
+namespace Vladify.IntegrationTests.Infrastructure;
 
 public static class JwtTokenBuilder
 {
