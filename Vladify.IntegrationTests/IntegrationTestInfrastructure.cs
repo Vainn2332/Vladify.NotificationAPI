@@ -57,7 +57,7 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
                     ValidIssuer = TestConstants.Issuer,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TestConstants.TestSecretKey))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TestConstants.testSecretKey))
                 });
             });
         });
@@ -80,7 +80,7 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
 
     public static string GenerateTestJWT(string email)
     {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TestConstants.TestSecretKey));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TestConstants.testSecretKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var claims = new List<Claim>
