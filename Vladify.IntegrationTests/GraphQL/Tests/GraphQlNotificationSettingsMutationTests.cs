@@ -7,6 +7,7 @@ using System.Text.Json;
 using Vladify.BusinessLogic.Interfaces;
 using Vladify.DataAccess.Entities;
 using Vladify.IntegrationTests.Constants;
+using Vladify.IntegrationTests.Infrastructure;
 using static Vladify.IntegrationTests.GraphQL.Responses.MutationsResponses;
 
 namespace Vladify.IntegrationTests.GraphQL.Tests;
@@ -28,10 +29,10 @@ public class GraphQlNotificationSettingsMutationTests
     [Fact]
     public async Task UpdateNotificationSettingsAsync_ShouldUpdateEntityAndReturnIt()
     {
-        await _infrastructure.ResetDataAsync();
+        await _infrastructure.Seeder.ResetDataAsync();
 
         var originalEntity = _fixture.Create<UserNotificationSettings>();
-        await _infrastructure.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, originalEntity);
+        await _infrastructure.Seeder.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, originalEntity);
 
         var newEmail = "updated_email@example.com";
 
@@ -51,7 +52,7 @@ public class GraphQlNotificationSettingsMutationTests
             }
             """;
 
-        var token = IntegrationTestInfrastructure.GenerateTestJWT(originalEntity.EmailAddress);
+        var token = JwtTokenBuilder.GenerateTestJWT(originalEntity.EmailAddress);
         var request = new HttpRequestMessage(HttpMethod.Post, TestConstants.GraphQlRoute)
         {
             Content = JsonContent.Create(new { query = mutation })
@@ -76,12 +77,12 @@ public class GraphQlNotificationSettingsMutationTests
     [Fact]
     public async Task PatchSubscriptionAsync_ShouldUpdateOnlySubscriptionStatus()
     {
-        await _infrastructure.ResetDataAsync();
+        await _infrastructure.Seeder.ResetDataAsync();
 
         var originalEntity = _fixture.Create<UserNotificationSettings>();
         originalEntity.NotificationSubscription.IsEmailSubscribed = false;
 
-        await _infrastructure.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, originalEntity);
+        await _infrastructure.Seeder.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, originalEntity);
 
         var newSubscriptionStatus = true;
 
@@ -94,7 +95,7 @@ public class GraphQlNotificationSettingsMutationTests
             }
             """;
 
-        var token = IntegrationTestInfrastructure.GenerateTestJWT(originalEntity.EmailAddress);
+        var token = JwtTokenBuilder.GenerateTestJWT(originalEntity.EmailAddress);
         var request = new HttpRequestMessage(HttpMethod.Post, TestConstants.GraphQlRoute)
         {
             Content = JsonContent.Create(new { query = mutation })
@@ -119,12 +120,12 @@ public class GraphQlNotificationSettingsMutationTests
     [Fact]
     public async Task PatchSubscriptionAsync_ShouldNotUpdateAnything_WhenPatchParamsAreNull()
     {
-        await _infrastructure.ResetDataAsync();
+        await _infrastructure.Seeder.ResetDataAsync();
 
         var originalEntity = _fixture.Create<UserNotificationSettings>();
         originalEntity.NotificationSubscription.IsEmailSubscribed = false;
 
-        await _infrastructure.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, originalEntity);
+        await _infrastructure.Seeder.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, originalEntity);
 
 
         var mutation = $$"""
@@ -136,7 +137,7 @@ public class GraphQlNotificationSettingsMutationTests
             }
             """;
 
-        var token = IntegrationTestInfrastructure.GenerateTestJWT(originalEntity.EmailAddress);
+        var token = JwtTokenBuilder.GenerateTestJWT(originalEntity.EmailAddress);
         var request = new HttpRequestMessage(HttpMethod.Post, TestConstants.GraphQlRoute)
         {
             Content = JsonContent.Create(new { query = mutation })

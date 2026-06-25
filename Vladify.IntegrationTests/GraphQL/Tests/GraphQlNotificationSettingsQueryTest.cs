@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using Vladify.DataAccess.Entities;
 using Vladify.IntegrationTests.Constants;
+using Vladify.IntegrationTests.Infrastructure;
 using static Vladify.IntegrationTests.GraphQL.Responses.QueryResponses;
 
 namespace Vladify.IntegrationTests.GraphQL.Tests;
@@ -25,10 +26,10 @@ public class GraphQlNotificationSettingsQueryTest
     [Fact]
     public async Task GetNotificationByIdAsync_ShouldReturnEntity_WhenValidInput()
     {
-        await _infrastructure.ResetDataAsync();
+        await _infrastructure.Seeder.ResetDataAsync();
 
         var userSettings = _fixture.Create<UserNotificationSettings>();
-        var seededEntity = await _infrastructure.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, userSettings);
+        var seededEntity = await _infrastructure.Seeder.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, userSettings);
 
         var query = $$"""
             query {
@@ -43,7 +44,7 @@ public class GraphQlNotificationSettingsQueryTest
             }
             """;
 
-        var token = IntegrationTestInfrastructure.GenerateTestJWT(seededEntity.EmailAddress);
+        var token = JwtTokenBuilder.GenerateTestJWT(seededEntity.EmailAddress);
         var request = new HttpRequestMessage(HttpMethod.Post, TestConstants.GraphQlRoute)
         {
             Content = JsonContent.Create(new { query })
@@ -65,10 +66,10 @@ public class GraphQlNotificationSettingsQueryTest
     [Fact]
     public async Task GetNotificationByIdAsync_ShouldReturnUnauthorizedException_WhenUnauthorized()
     {
-        await _infrastructure.ResetDataAsync();
+        await _infrastructure.Seeder.ResetDataAsync();
 
         var userSettings = _fixture.Create<UserNotificationSettings>();
-        var seededEntity = await _infrastructure.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, userSettings);
+        var seededEntity = await _infrastructure.Seeder.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, userSettings);
 
         var query = $$"""
             query {
@@ -100,12 +101,12 @@ public class GraphQlNotificationSettingsQueryTest
     [Fact]
     public async Task GetNotificationsAsync_ShouldReturnList_WhenValidInput()
     {
-        await _infrastructure.ResetDataAsync();
+        await _infrastructure.Seeder.ResetDataAsync();
 
         var entities = _fixture.CreateMany<UserNotificationSettings>(3).ToList();
         foreach (var entity in entities)
         {
-            await _infrastructure.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, entity);
+            await _infrastructure.Seeder.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, entity);
         }
 
         var query = $$"""
@@ -121,7 +122,7 @@ public class GraphQlNotificationSettingsQueryTest
             }
             """;
 
-        var token = IntegrationTestInfrastructure.GenerateTestJWT(entities[0].EmailAddress);
+        var token = JwtTokenBuilder.GenerateTestJWT(entities[0].EmailAddress);
         var request = new HttpRequestMessage(HttpMethod.Post, TestConstants.GraphQlRoute)
         {
             Content = JsonContent.Create(new { query })
@@ -142,7 +143,7 @@ public class GraphQlNotificationSettingsQueryTest
     [Fact]
     public async Task GetEmailSubscribersAsync_ShouldReturnPartialSubscribersDto_WhenValidInput()
     {
-        await _infrastructure.ResetDataAsync();
+        await _infrastructure.Seeder.ResetDataAsync();
 
         var subscriber = _fixture.Create<UserNotificationSettings>();
         subscriber.NotificationSubscription.IsEmailSubscribed = true;
@@ -150,8 +151,8 @@ public class GraphQlNotificationSettingsQueryTest
         var unsubscribedUser = _fixture.Create<UserNotificationSettings>();
         unsubscribedUser.NotificationSubscription.IsEmailSubscribed = false;
 
-        await _infrastructure.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, subscriber);
-        await _infrastructure.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, unsubscribedUser);
+        await _infrastructure.Seeder.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, subscriber);
+        await _infrastructure.Seeder.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, unsubscribedUser);
 
         var query = """
             query {
@@ -162,7 +163,7 @@ public class GraphQlNotificationSettingsQueryTest
             }
             """;
 
-        var token = IntegrationTestInfrastructure.GenerateTestJWT(subscriber.EmailAddress);
+        var token = JwtTokenBuilder.GenerateTestJWT(subscriber.EmailAddress);
         var request = new HttpRequestMessage(HttpMethod.Post, TestConstants.GraphQlRoute)
         {
             Content = JsonContent.Create(new { query })
