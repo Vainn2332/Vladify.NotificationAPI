@@ -30,7 +30,7 @@ public static class ApiExtensions
         {
             var auth0Options = auth0.Value;
 
-            options.Authority = $"https://{auth0Options.Domain}";
+            options.Authority = auth0Options.Authority;
             options.Audience = auth0Options.Audience;
 
             options.TokenValidationParameters = new TokenValidationParameters
@@ -58,5 +58,4 @@ public static class ApiExtensions
 
         return services;
     }
-
 }

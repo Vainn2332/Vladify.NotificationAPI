@@ -11,4 +11,6 @@ public class Auth0Options
 
     [Required]
     public required string Audience { get; set; }
+
+    public string Authority => $"https://{Domain}";
 }
