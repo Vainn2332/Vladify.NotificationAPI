@@ -78,7 +78,7 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
         }
     }
 
-    public string GenerateTestJWT(string email)
+    public static string GenerateTestJWT(string email)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TestConstants.TestSecretKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

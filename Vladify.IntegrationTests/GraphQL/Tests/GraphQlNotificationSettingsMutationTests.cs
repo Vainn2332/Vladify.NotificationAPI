@@ -51,7 +51,7 @@ public class GraphQlNotificationSettingsMutationTests
             }
             """;
 
-        var token = _infrastructure.GenerateTestJWT(originalEntity.EmailAddress);
+        var token = IntegrationTestInfrastructure.GenerateTestJWT(originalEntity.EmailAddress);
         var request = new HttpRequestMessage(HttpMethod.Post, TestConstants.GraphQlRoute)
         {
             Content = JsonContent.Create(new { query = mutation })
@@ -94,7 +94,7 @@ public class GraphQlNotificationSettingsMutationTests
             }
             """;
 
-        var token = _infrastructure.GenerateTestJWT(originalEntity.EmailAddress);
+        var token = IntegrationTestInfrastructure.GenerateTestJWT(originalEntity.EmailAddress);
         var request = new HttpRequestMessage(HttpMethod.Post, TestConstants.GraphQlRoute)
         {
             Content = JsonContent.Create(new { query = mutation })
@@ -136,7 +136,7 @@ public class GraphQlNotificationSettingsMutationTests
             }
             """;
 
-        var token = _infrastructure.GenerateTestJWT(originalEntity.EmailAddress);
+        var token = IntegrationTestInfrastructure.GenerateTestJWT(originalEntity.EmailAddress);
         var request = new HttpRequestMessage(HttpMethod.Post, TestConstants.GraphQlRoute)
         {
             Content = JsonContent.Create(new { query = mutation })
