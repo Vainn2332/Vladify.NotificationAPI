@@ -67,6 +67,7 @@ jobs:
         Auth0Options__Domain: ${{ secrets.AUTH0_DOMAIN }}
         Auth0Options__Audience: ${{ secrets.AUTH0_AUDIENCE }}
 
+        TEST_JWT_SECRETKEY: ${{ secrets.TEST_JWT_SECRETKEY }}
 
     - name: End Analysis
       env:
