@@ -6,7 +6,7 @@ namespace Vladify.IntegrationTests.GraphQL.Responses;
 public class MutationsResponses
 {
     public record PartialUpdateNotificationSettingsMutationResponse(
-    [property: JsonPropertyName("updateNotificationSettings")] PartialSubscriberDto Result
+        [property: JsonPropertyName("updateNotificationSettings")] PartialSubscriberDto Result
     );
 
     public record PatchSubscriptionMutationResponse(
