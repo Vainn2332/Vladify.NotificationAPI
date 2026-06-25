@@ -1,5 +1,4 @@
-﻿using AutoFixture;
-using MassTransit;
+﻿using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
@@ -9,8 +8,6 @@ using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Moq;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Text;
 using Testcontainers.MongoDb;
 using Vladify.IntegrationTests.Constants;
@@ -21,7 +18,7 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
 {
     private readonly MongoDbContainer _mongoDbContainer = new MongoDbBuilder().Build();
     private IMongoDatabase _database = null!;
-    private readonly IFixture _fixture = new Fixture();
+
     public WebApplicationFactory<Program> Factory { get; private set; } = null!;
 
     public HttpClient Client { get; private set; } = null!;
@@ -31,7 +28,7 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
         await _mongoDbContainer.StartAsync();
 
         var mongoClient = new MongoClient(_mongoDbContainer.GetConnectionString());
-        _database = mongoClient.GetDatabase("TestDb");
+        _database = mongoClient.GetDatabase(TestConstants.DbName);
 
         Factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
@@ -40,7 +37,7 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
                 config.AddInMemoryCollection(new Dictionary<string, string?>
                 {
                     ["MongoDbOptions:ConnectionString"] = _mongoDbContainer.GetConnectionString(),
-                    ["MongoDbOptions:DatabaseName"] = "TestDb"
+                    ["MongoDbOptions:DatabaseName"] = TestConstants.DbName
                 });
             });
 
@@ -57,7 +54,7 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
                     ValidIssuer = TestConstants.Issuer,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TestConstants.testSecretKey))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TestConstants.TestSecretKey))
                 });
             });
         });
@@ -76,34 +73,6 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
                 .GetCollection<BsonDocument>(collectionName)
                 .DeleteManyAsync(Builders<BsonDocument>.Filter.Empty);
         }
-    }
-
-    public static string GenerateTestJWT(string email)
-    {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TestConstants.testSecretKey));
-        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        var claims = new List<Claim>
-        {
-            new Claim(TestConstants.CustomEmailClaimName,email)
-        };
-
-        var token = new JwtSecurityToken(
-            issuer: TestConstants.Issuer,
-            audience: TestConstants.Audience,
-            claims: claims,
-            expires: DateTime.Now.AddMinutes(5),
-            signingCredentials: credentials
-            );
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
-
-    public async Task DisposeAsync()
-    {
-        Client.Dispose();
-        await Factory.DisposeAsync();
-        await _mongoDbContainer.DisposeAsync();
     }
 
     public async Task<TEntity> SeedDataAsync<TEntity>(string collectionName, TEntity entity) where TEntity : class
@@ -125,5 +94,12 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
             .Returns(Task.CompletedTask);
 
         services.AddScoped(serviceProvider => publishEndpointMock.Object);
+    }
+
+    public async Task DisposeAsync()
+    {
+        Client.Dispose();
+        await Factory.DisposeAsync();
+        await _mongoDbContainer.DisposeAsync();
     }
 }
