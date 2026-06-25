@@ -49,7 +49,7 @@ public class NotificationRepository(IMongoCollection<UserNotificationSettings> _
             .ToListAsync(cancellationToken);
     }
 
-    public Task PatchSubscriptionAsync(PatchSubscriptionDto patchSubscriptionDto, CancellationToken cancellationToken)
+    public async Task<UserNotificationSettings> PatchSubscriptionAsync(PatchSubscriptionDto patchSubscriptionDto, CancellationToken cancellationToken)
     {
         var updateBuilder = Builders<UserNotificationSettings>.Update;
         var updates = new List<UpdateDefinition<UserNotificationSettings>>();
@@ -61,13 +61,22 @@ public class NotificationRepository(IMongoCollection<UserNotificationSettings> _
                 patchSubscriptionDto.IsEmailSubscribed.Value));
         }
 
-        if (updates.Count == 0) return Task.CompletedTask;
+        if (updates.Count == 0)
+        {
+            return await _notifications.Find(x => x.Id == patchSubscriptionDto.Id).FirstOrDefaultAsync(cancellationToken);
+        }
 
         var combinedUpdate = updateBuilder.Combine(updates);
 
-        return _notifications.UpdateOneAsync(
+        var options = new FindOneAndUpdateOptions<UserNotificationSettings>
+        {
+            ReturnDocument = ReturnDocument.After
+        };
+
+        return await _notifications.FindOneAndUpdateAsync(
             item => item.Id == patchSubscriptionDto.Id,
             combinedUpdate,
-            cancellationToken: cancellationToken);
+            options,
+            cancellationToken);
     }
 }
