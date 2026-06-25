@@ -5,23 +5,22 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using Moq;
 using System.Text;
 using Testcontainers.MongoDb;
 using Vladify.IntegrationTests.Constants;
 
-namespace Vladify.IntegrationTests;
+namespace Vladify.IntegrationTests.Infrastructure;
 
 public class IntegrationTestInfrastructure : IAsyncLifetime
 {
     private readonly MongoDbContainer _mongoDbContainer = new MongoDbBuilder().Build();
     private IMongoDatabase _database = null!;
 
-    public WebApplicationFactory<Program> Factory { get; private set; } = null!;
-
+    public TestDataSeeder Seeder { get; private set; } = null!;
     public HttpClient Client { get; private set; } = null!;
+    public WebApplicationFactory<Program> Factory { get; private set; } = null!;
 
     public async Task InitializeAsync()
     {
@@ -29,6 +28,8 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
 
         var mongoClient = new MongoClient(_mongoDbContainer.GetConnectionString());
         _database = mongoClient.GetDatabase(TestConstants.DbName);
+
+        Seeder = new TestDataSeeder(_database);
 
         Factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
@@ -60,27 +61,6 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
         });
 
         Client = Factory.CreateClient();
-    }
-
-    public async Task ResetDataAsync()
-    {
-        var collections = await _database.ListCollectionNamesAsync();
-        var collectionNames = await collections.ToListAsync();
-
-        foreach (var collectionName in collectionNames)
-        {
-            await _database
-                .GetCollection<BsonDocument>(collectionName)
-                .DeleteManyAsync(Builders<BsonDocument>.Filter.Empty);
-        }
-    }
-
-    public async Task<TEntity> SeedDataAsync<TEntity>(string collectionName, TEntity entity) where TEntity : class
-    {
-        var collection = _database.GetCollection<TEntity>(collectionName);
-        await collection.InsertOneAsync(entity);
-
-        return entity;
     }
 
     private static void ConfigureTestServices(IServiceCollection services)
