@@ -16,9 +16,10 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
 {
     private readonly MongoDbContainer _mongoDbContainer = new MongoDbBuilder().Build();
     private IMongoDatabase _database = null!;
+    private HttpClient _httpClient = null!;
 
+    public GraphQlClient GraphQlClient { get; private set; } = null!;
     public TestDataSeeder Seeder { get; private set; } = null!;
-    public HttpClient Client { get; private set; } = null!;
     public WebApplicationFactory<Program> Factory { get; private set; } = null!;
 
     public async Task InitializeAsync()
@@ -59,7 +60,8 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
             });
         });
 
-        Client = Factory.CreateClient();
+        _httpClient = Factory.CreateClient();
+        GraphQlClient = new GraphQlClient(_httpClient);
     }
 
     private static void ConfigureTestServices(IServiceCollection services)
@@ -77,7 +79,7 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
 
     public async Task DisposeAsync()
     {
-        Client.Dispose();
+        _httpClient.Dispose();
         await Factory.DisposeAsync();
         await _mongoDbContainer.DisposeAsync();
     }
