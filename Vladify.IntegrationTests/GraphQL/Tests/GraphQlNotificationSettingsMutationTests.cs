@@ -1,7 +1,6 @@
 ﻿using AutoFixture;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text.Json;
 using Vladify.BusinessLogic.Interfaces;
 using Vladify.BusinessLogic.Models;
 using Vladify.DataAccess.Entities;
@@ -16,13 +15,11 @@ public class GraphQlNotificationSettingsMutationTests
 {
     private readonly IFixture _fixture;
     private readonly IntegrationTestInfrastructure _infrastructure;
-    private readonly JsonSerializerOptions _serializerOptions;
 
     public GraphQlNotificationSettingsMutationTests(IntegrationTestInfrastructure infrastructure)
     {
         _fixture = AutoFixtureOptions.CreateFixture();
         _infrastructure = infrastructure;
-        _serializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     }
 
     [Fact]
