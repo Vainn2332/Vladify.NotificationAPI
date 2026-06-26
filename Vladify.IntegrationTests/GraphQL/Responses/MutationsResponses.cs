@@ -10,6 +10,6 @@ public class MutationsResponses
     );
 
     public record PatchSubscriptionMutationResponse(
-        [property: JsonPropertyName("patchSubscription")] bool Result
+        [property: JsonPropertyName("patchSubscription")] PartialSubscriberDto Result
     );
 }

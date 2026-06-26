@@ -91,7 +91,10 @@ public class GraphQlNotificationSettingsMutationTests
                 patchSubscription(input: {
                     id: "{{originalEntity.Id}}",
                     isEmailSubscribed: {{newSubscriptionStatus.ToString().ToLower()}}
-                })
+                }) {
+                    id
+                    emailAddress
+                }
             }
             """;
 
@@ -110,7 +113,7 @@ public class GraphQlNotificationSettingsMutationTests
         var entityInDb = await notificationService.GetByIdAsync(originalEntity.Id, CancellationToken.None);
 
         result!.Errors.Should().BeEmpty();
-        result!.Data!.Result.Should().BeTrue();
+        result!.Data!.Result.Should().NotBeNull();
 
         entityInDb.Should().NotBeNull();
         entityInDb.EmailAddress.Should().Be(originalEntity.EmailAddress);
@@ -133,7 +136,10 @@ public class GraphQlNotificationSettingsMutationTests
                 patchSubscription(input: {
                     id: "{{originalEntity.Id}}",
                     isEmailSubscribed: null
-                })
+                }) {
+                    id
+                    emailAddress
+                }
             }
             """;
 
@@ -152,7 +158,7 @@ public class GraphQlNotificationSettingsMutationTests
         var entityInDb = await notificationService.GetByIdAsync(originalEntity.Id, CancellationToken.None);
 
         result!.Errors.Should().BeEmpty();
-        result!.Data!.Result.Should().BeTrue();
+        result!.Data!.Result.Should().NotBeNull();
 
         entityInDb.Should().NotBeNull();
         entityInDb.EmailAddress.Should().Be(originalEntity.EmailAddress);

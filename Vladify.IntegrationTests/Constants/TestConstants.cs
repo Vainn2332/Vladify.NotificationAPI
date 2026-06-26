@@ -1,4 +1,6 @@
-﻿namespace Vladify.IntegrationTests.Constants;
+﻿using System.Security.Cryptography;
+
+namespace Vladify.IntegrationTests.Constants;
 
 public static class TestConstants
 {
@@ -6,8 +8,7 @@ public static class TestConstants
 
     public const string Issuer = "testIssuer";
 
-    public static readonly string TestSecretKey = Environment.GetEnvironmentVariable("TEST_JWT_SECRETKEY")
-            ?? throw new ArgumentException("Failed to get test jwt secret key");
+    public static readonly string TestSecretKey = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
 
     public const string BaseClaimNamespace = "https://vladify.com/";
 

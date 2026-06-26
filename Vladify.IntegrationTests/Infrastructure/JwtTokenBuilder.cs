@@ -1,7 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using Vladify.IntegrationTests.Constants;
 
 namespace Vladify.IntegrationTests.Infrastructure;
@@ -10,7 +9,8 @@ public static class JwtTokenBuilder
 {
     public static string GenerateTestJWT(string email)
     {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TestConstants.TestSecretKey));
+        var keyBytes = Convert.FromBase64String(TestConstants.TestSecretKey);
+        var key = new SymmetricSecurityKey(keyBytes);
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var claims = new List<Claim>

@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using Moq;
-using System.Text;
 using Testcontainers.MongoDb;
 using Vladify.IntegrationTests.Constants;
 
@@ -55,7 +54,7 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
                     ValidIssuer = TestConstants.Issuer,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TestConstants.TestSecretKey))
+                    IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(TestConstants.TestSecretKey))
                 });
             });
         });
