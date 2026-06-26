@@ -1,8 +1,5 @@
 ﻿using AutoFixture;
 using FluentAssertions;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Text.Json;
 using Vladify.DataAccess.Entities;
 using Vladify.IntegrationTests.Constants;
 using Vladify.IntegrationTests.Infrastructure;
@@ -15,12 +12,11 @@ public class GraphQlNotificationSettingsQueryTest
 {
     private readonly IFixture _fixture;
     private readonly IntegrationTestInfrastructure _infrastructure;
-    private readonly JsonSerializerOptions _serializerOptions;
+
     public GraphQlNotificationSettingsQueryTest(IntegrationTestInfrastructure infrastructure)
     {
         _fixture = AutoFixtureOptions.CreateFixture();
         _infrastructure = infrastructure;
-        _serializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     }
 
     [Fact]
@@ -31,35 +27,14 @@ public class GraphQlNotificationSettingsQueryTest
         var userSettings = _fixture.Create<UserNotificationSettings>();
         var seededEntity = await _infrastructure.Seeder.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, userSettings);
 
-        var query = $$"""
-            query {
-                notificationById(id: "{{seededEntity.Id}}") {
-                    id
-                    userId
-                    emailAddress
-                    notificationSubscription {
-                        isEmailSubscribed
-                    }
-                }
-            }
-            """;
+        var query = BuildNotificationByIdQuery(seededEntity.Id);
 
-        var token = JwtTokenBuilder.GenerateTestJWT(seededEntity.EmailAddress);
-        var request = new HttpRequestMessage(HttpMethod.Post, TestConstants.GraphQlRoute)
-        {
-            Content = JsonContent.Create(new { query })
-        };
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var result = await _infrastructure.GraphQlClient.SendAsync<NotificationByIdQueryResponse>(query, seededEntity.EmailAddress);
 
-        using var response = await _infrastructure.Client.SendAsync(request);
-
-        var result = await response.Content.ReadFromJsonAsync<GraphQlResponse<NotificationByIdQueryResponse>>(_serializerOptions);
-
-        result!.Data!.Result.Should().NotBeNull();
-        result!.Errors.Should().BeEmpty();
-
-        result!.Data.Result!.Id.Should().Be(seededEntity.Id);
-        result!.Data.Result!.NotificationSubscription.IsEmailSubscribed
+        result.Data!.Result.Should().NotBeNull();
+        result.Errors.Should().BeEmpty();
+        result.Data.Result!.Id.Should().Be(seededEntity.Id);
+        result.Data.Result.NotificationSubscription.IsEmailSubscribed
             .Should().Be(seededEntity.NotificationSubscription.IsEmailSubscribed);
     }
 
@@ -71,31 +46,13 @@ public class GraphQlNotificationSettingsQueryTest
         var userSettings = _fixture.Create<UserNotificationSettings>();
         var seededEntity = await _infrastructure.Seeder.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, userSettings);
 
-        var query = $$"""
-            query {
-                notificationById(id: "{{seededEntity.Id}}") {
-                    id
-                    userId
-                    emailAddress
-                    notificationSubscription {
-                        isEmailSubscribed
-                    }
-                }
-            }
-            """;
+        var query = BuildNotificationByIdQuery(seededEntity.Id);
 
-        var request = new HttpRequestMessage(HttpMethod.Post, TestConstants.GraphQlRoute)
-        {
-            Content = JsonContent.Create(new { query })
-        };
-        using var response = await _infrastructure.Client.SendAsync(request);
+        var result = await _infrastructure.GraphQlClient.SendAsync<NotificationByIdQueryResponse>(query);
 
-        var result = await response.Content.ReadFromJsonAsync<GraphQlResponse<NotificationByIdQueryResponse>>(_serializerOptions);
-
-        result!.Data!.Result.Should().BeNull();
-        result!.Errors.Should().NotBeEmpty();
-
-        result!.Errors[0].Message.Should().Be("The current user is not authorized to access this resource.");
+        result.Data!.Result.Should().BeNull();
+        result.Errors.Should().NotBeEmpty();
+        result.Errors![0].Message.Should().Be("The current user is not authorized to access this resource.");
     }
 
     [Fact]
@@ -109,7 +66,7 @@ public class GraphQlNotificationSettingsQueryTest
             await _infrastructure.Seeder.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, entity);
         }
 
-        var query = $$"""
+        var query = """
             query {
                 notifications(pageNumber: 1, pageSize: 10) {
                     id
@@ -122,18 +79,10 @@ public class GraphQlNotificationSettingsQueryTest
             }
             """;
 
-        var token = JwtTokenBuilder.GenerateTestJWT(entities[0].EmailAddress);
-        var request = new HttpRequestMessage(HttpMethod.Post, TestConstants.GraphQlRoute)
-        {
-            Content = JsonContent.Create(new { query })
-        };
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var result = await _infrastructure.GraphQlClient.SendAsync<NotificationsQueryResponse>(query, entities[0].EmailAddress);
 
-        using var response = await _infrastructure.Client.SendAsync(request);
-        var result = await response.Content.ReadFromJsonAsync<GraphQlResponse<NotificationsQueryResponse>>(_serializerOptions);
-
-        result!.Errors.Should().BeEmpty();
-        result!.Data!.Result.Should().NotBeNull();
+        result.Errors.Should().BeEmpty();
+        result.Data!.Result.Should().NotBeNull();
 
         var returnedList = result.Data.Result;
         returnedList.Should().HaveCount(3);
@@ -163,18 +112,24 @@ public class GraphQlNotificationSettingsQueryTest
             }
             """;
 
-        var token = JwtTokenBuilder.GenerateTestJWT(subscriber.EmailAddress);
-        var request = new HttpRequestMessage(HttpMethod.Post, TestConstants.GraphQlRoute)
-        {
-            Content = JsonContent.Create(new { query })
-        };
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var result = await _infrastructure.GraphQlClient.SendAsync<PartialEmailSubscribersQueryResponse>(query, subscriber.EmailAddress);
 
-        using var response = await _infrastructure.Client.SendAsync(request);
-        var result = await response.Content.ReadFromJsonAsync<GraphQlResponse<PartialEmailSubscribersQueryResponse>>(_serializerOptions);
-
-        result!.Errors.Should().BeEmpty();
-        result!.Data!.Result.Should().NotBeNull();
-        result!.Data.Result.Length.Should().Be(1);
+        result.Errors.Should().BeEmpty();
+        result.Data!.Result.Should().NotBeNull();
+        result.Data.Result.Length.Should().Be(1);
     }
+
+    private static string BuildNotificationByIdQuery(string id) =>
+        $$"""
+           query {
+               notificationById(id: "{{id}}") {
+                   id
+                   userId
+                   emailAddress
+                   notificationSubscription {
+                       isEmailSubscribed
+                   }                
+               }
+           }
+         """;
 }

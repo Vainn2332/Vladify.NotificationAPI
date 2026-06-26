@@ -1,10 +1,9 @@
 ﻿using AutoFixture;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using System.Text.Json;
 using Vladify.BusinessLogic.Interfaces;
+using Vladify.BusinessLogic.Models;
 using Vladify.DataAccess.Entities;
 using Vladify.IntegrationTests.Constants;
 using Vladify.IntegrationTests.Infrastructure;
@@ -35,7 +34,6 @@ public class GraphQlNotificationSettingsMutationTests
         await _infrastructure.Seeder.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, originalEntity);
 
         var newEmail = "updated_email@example.com";
-
         var mutation = $$"""
             mutation {
                 updateNotificationSettings(input: {
@@ -52,24 +50,12 @@ public class GraphQlNotificationSettingsMutationTests
             }
             """;
 
-        var token = JwtTokenBuilder.GenerateTestJWT(originalEntity.EmailAddress);
-        var request = new HttpRequestMessage(HttpMethod.Post, TestConstants.GraphQlRoute)
-        {
-            Content = JsonContent.Create(new { query = mutation })
-        };
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var result = await _infrastructure.GraphQlClient.SendAsync<PartialUpdateNotificationSettingsMutationResponse>(mutation, originalEntity.EmailAddress);
+        var entityInDb = await GetEntityFromDbAsync(originalEntity.Id);
 
-        using var response = await _infrastructure.Client.SendAsync(request);
-        var result = await response.Content.ReadFromJsonAsync<GraphQlResponse<PartialUpdateNotificationSettingsMutationResponse>>(_serializerOptions);
-
-        using var scope = _infrastructure.Factory.Services.CreateScope();
-        var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
-        var entityInDb = await notificationService.GetByIdAsync(originalEntity.Id, CancellationToken.None);
-
-        result!.Errors.Should().BeEmpty();
+        result.Errors.Should().BeEmpty();
         result.Data?.Result.Should().NotBeNull();
         result.Data?.Result.EmailAddress.Should().Be(newEmail);
-
         entityInDb.Should().NotBeNull();
         entityInDb!.EmailAddress.Should().Be(newEmail);
     }
@@ -81,42 +67,18 @@ public class GraphQlNotificationSettingsMutationTests
 
         var originalEntity = _fixture.Create<UserNotificationSettings>();
         originalEntity.NotificationSubscription.IsEmailSubscribed = false;
-
         await _infrastructure.Seeder.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, originalEntity);
 
         var newSubscriptionStatus = true;
+        var mutation = BuildPatchSubscriptionMutation(originalEntity.Id, newSubscriptionStatus.ToString().ToLower());
 
-        var mutation = $$"""
-            mutation {
-                patchSubscription(input: {
-                    id: "{{originalEntity.Id}}",
-                    isEmailSubscribed: {{newSubscriptionStatus.ToString().ToLower()}}
-                }) {
-                    id
-                    emailAddress
-                }
-            }
-            """;
+        var result = await _infrastructure.GraphQlClient.SendAsync<PatchSubscriptionMutationResponse>(mutation, originalEntity.EmailAddress);
+        var entityInDb = await GetEntityFromDbAsync(originalEntity.Id);
 
-        var token = JwtTokenBuilder.GenerateTestJWT(originalEntity.EmailAddress);
-        var request = new HttpRequestMessage(HttpMethod.Post, TestConstants.GraphQlRoute)
-        {
-            Content = JsonContent.Create(new { query = mutation })
-        };
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-        using var response = await _infrastructure.Client.SendAsync(request);
-        var result = await response.Content.ReadFromJsonAsync<GraphQlResponse<PatchSubscriptionMutationResponse>>(_serializerOptions);
-
-        using var scope = _infrastructure.Factory.Services.CreateScope();
-        var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
-        var entityInDb = await notificationService.GetByIdAsync(originalEntity.Id, CancellationToken.None);
-
-        result!.Errors.Should().BeEmpty();
-        result!.Data!.Result.Should().NotBeNull();
-
+        result.Errors.Should().BeEmpty();
+        result.Data!.Result.Should().NotBeNull();
         entityInDb.Should().NotBeNull();
-        entityInDb.EmailAddress.Should().Be(originalEntity.EmailAddress);
+        entityInDb!.EmailAddress.Should().Be(originalEntity.EmailAddress);
         entityInDb.NotificationSubscription.IsEmailSubscribed.Should().Be(newSubscriptionStatus);
     }
 
@@ -127,41 +89,37 @@ public class GraphQlNotificationSettingsMutationTests
 
         var originalEntity = _fixture.Create<UserNotificationSettings>();
         originalEntity.NotificationSubscription.IsEmailSubscribed = false;
-
         await _infrastructure.Seeder.SeedDataAsync(TestConstants.UserNotificationSettingsCollectionName, originalEntity);
 
+        var mutation = BuildPatchSubscriptionMutation(originalEntity.Id, "null");
 
-        var mutation = $$"""
-            mutation {
-                patchSubscription(input: {
-                    id: "{{originalEntity.Id}}",
-                    isEmailSubscribed: null
-                }) {
-                    id
-                    emailAddress
-                }
+        var result = await _infrastructure.GraphQlClient.SendAsync<PatchSubscriptionMutationResponse>(mutation, originalEntity.EmailAddress);
+        var entityInDb = await GetEntityFromDbAsync(originalEntity.Id);
+
+        result.Errors.Should().BeEmpty();
+        result.Data!.Result.Should().NotBeNull();
+        entityInDb.Should().NotBeNull();
+        entityInDb!.EmailAddress.Should().Be(originalEntity.EmailAddress);
+        entityInDb.NotificationSubscription.IsEmailSubscribed.Should().Be(originalEntity.NotificationSubscription.IsEmailSubscribed);
+    }
+
+    private static string BuildPatchSubscriptionMutation(string id, string isEmailSubscribedValue) =>
+        $$"""
+        mutation {
+            patchSubscription(input: {
+                id: "{{id}}",
+                isEmailSubscribed: {{isEmailSubscribedValue}}
+            }) {
+                id
+                emailAddress
             }
-            """;
+        }
+        """;
 
-        var token = JwtTokenBuilder.GenerateTestJWT(originalEntity.EmailAddress);
-        var request = new HttpRequestMessage(HttpMethod.Post, TestConstants.GraphQlRoute)
-        {
-            Content = JsonContent.Create(new { query = mutation })
-        };
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-        using var response = await _infrastructure.Client.SendAsync(request);
-        var result = await response.Content.ReadFromJsonAsync<GraphQlResponse<PatchSubscriptionMutationResponse>>(_serializerOptions);
-
+    private Task<UserNotificationSettingsModel?> GetEntityFromDbAsync(string id)
+    {
         using var scope = _infrastructure.Factory.Services.CreateScope();
         var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
-        var entityInDb = await notificationService.GetByIdAsync(originalEntity.Id, CancellationToken.None);
-
-        result!.Errors.Should().BeEmpty();
-        result!.Data!.Result.Should().NotBeNull();
-
-        entityInDb.Should().NotBeNull();
-        entityInDb.EmailAddress.Should().Be(originalEntity.EmailAddress);
-        entityInDb.NotificationSubscription.IsEmailSubscribed.Should().Be(originalEntity.NotificationSubscription.IsEmailSubscribed);
+        return notificationService.GetByIdAsync(id, CancellationToken.None);
     }
 }
