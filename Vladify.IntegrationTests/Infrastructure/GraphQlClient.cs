@@ -28,11 +28,11 @@ public class GraphQlClient
         {
             var token = JwtTokenBuilder.GenerateTestJWT(userEmail);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
         }
 
         using var response = await _client.SendAsync(request);
+        var result = await response.Content.ReadFromJsonAsync<GraphQlResponse<TResponse>>(_serializerOptions);
 
-        return (await response.Content.ReadFromJsonAsync<GraphQlResponse<TResponse>>(_serializerOptions))!;
+        return result!;
     }
 }
