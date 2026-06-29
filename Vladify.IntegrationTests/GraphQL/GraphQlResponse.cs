@@ -4,5 +4,5 @@ public class GraphQlResponse<TQueryResponse>
 {
     public TQueryResponse? Data { get; set; }
 
-    public GraphQlErrorMessage[]? Errors { get; set; } = [];
+    public IReadOnlyList<GraphQlErrorMessage>? Errors { get; set; } = [];
 }
