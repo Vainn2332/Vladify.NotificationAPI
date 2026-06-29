@@ -1,37 +1,38 @@
 using Scalar.AspNetCore;
 using Vladify.NotificationAPI.Extensions;
 
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddControllers();
-
-builder.Services.AddOpenApi();
-
-builder.Services.AddAppServices(builder.Configuration);
-
-var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
+public class Program
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference();
-}
+    private static async Task Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-app.UseAuthentication();
+        builder.Services.AddControllers();
 
-app.UseAuthorization();
+        builder.Services.AddOpenApi();
 
-app.MapGraphQL();
+        builder.Services.AddAppServices(builder.Configuration);
 
-app.UseHttpsRedirection();
+        var app = builder.Build();
 
-app.UseAuthorization();
+        if (app.Environment.IsDevelopment())
+        {
+            app.MapOpenApi();
+            app.MapScalarApiReference();
+        }
 
-app.MapControllers();
+        app.UseAuthentication();
 
-await app.RunAsync();
+        app.UseAuthorization();
 
-public partial class Program
-{
-    protected Program() { }
+        app.MapGraphQL();
+
+        app.UseHttpsRedirection();
+
+        app.UseAuthorization();
+
+        app.MapControllers();
+
+        await app.RunAsync();
+    }
 }
