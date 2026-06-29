@@ -9,6 +9,7 @@ using MongoDB.Driver;
 using Moq;
 using Testcontainers.MongoDb;
 using Vladify.IntegrationTests.Constants;
+using Vladify.NotificationAPI;
 
 namespace Vladify.IntegrationTests.Infrastructure;
 

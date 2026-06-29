@@ -1,6 +1,8 @@
 using Scalar.AspNetCore;
 using Vladify.NotificationAPI.Extensions;
 
+namespace Vladify.NotificationAPI;
+
 public class Program
 {
     private static async Task Main(string[] args)
