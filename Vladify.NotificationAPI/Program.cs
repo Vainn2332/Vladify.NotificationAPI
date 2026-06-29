@@ -5,6 +5,8 @@ namespace Vladify.NotificationAPI;
 
 public class Program
 {
+    protected Program() { }
+
     private static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
