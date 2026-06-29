@@ -55,7 +55,7 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
                     ValidIssuer = TestConstants.Issuer,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(TestConstants.TestSecretKey))
+                    IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(JwtTokenBuilder.TestSecretKey))
                 });
             });
         });
