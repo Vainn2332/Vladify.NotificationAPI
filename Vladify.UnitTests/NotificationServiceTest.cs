@@ -7,6 +7,7 @@ using Vladify.BusinessLogic.Exceptions;
 using Vladify.BusinessLogic.Models;
 using Vladify.BusinessLogic.Services;
 using Vladify.DataAccess;
+using Vladify.DataAccess.Dto;
 using Vladify.DataAccess.Entities;
 
 namespace Vladify.UnitTests;
@@ -148,5 +149,40 @@ public class NotificationServiceTest
         await act.Should().ThrowAsync<NotFoundException>();
         _repositoryMock.Verify(m => m.GetByIdAsync(id, CancellationToken.None), Times.Once);
         _repositoryMock.Verify(m => m.DeleteAsync(id, CancellationToken.None), Times.Never);
+    }
+
+    [Fact]
+    public async Task PatchSubscriptionAsync_ShouldReturnModel_WhenValidInput()
+    {
+        var request = _fixture.Create<UserNotificationSubscriptionPatchRequestModel>();
+        var dto = _fixture.Create<PatchSubscriptionDto>();
+        var updatedEntity = _fixture.Create<UserNotificationSettings>();
+        var expectedModel = _fixture.Create<UserNotificationSettingsModel>();
+
+        _mapperMock.Setup(m => m.Map<PatchSubscriptionDto>(request)).Returns(dto);
+        _repositoryMock.Setup(m => m.PatchSubscriptionAsync(dto, CancellationToken.None)).ReturnsAsync(updatedEntity);
+        _mapperMock.Setup(m => m.Map<UserNotificationSettingsModel>(updatedEntity)).Returns(expectedModel);
+
+        var result = await _notificationService.PatchSubscriptionAsync(request, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result.Should().BeOfType<UserNotificationSettingsModel>();
+        _repositoryMock.Verify(m => m.PatchSubscriptionAsync(dto, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task PatchSubscriptionAsync_ShouldThrowNotFoundException_WhenEntityNotFound()
+    {
+        var request = _fixture.Create<UserNotificationSubscriptionPatchRequestModel>();
+        var dto = _fixture.Create<PatchSubscriptionDto>();
+
+        _mapperMock.Setup(m => m.Map<PatchSubscriptionDto>(request)).Returns(dto);
+
+        _repositoryMock.Setup(m => m.PatchSubscriptionAsync(dto, CancellationToken.None)).ReturnsAsync((UserNotificationSettings)null!);
+
+        var act = async () => await _notificationService.PatchSubscriptionAsync(request, CancellationToken.None);
+
+        await act.Should().ThrowAsync<NotFoundException>().WithMessage("Notification with such id doesn't exist!");
+        _repositoryMock.Verify(m => m.PatchSubscriptionAsync(dto, It.IsAny<CancellationToken>()), Times.Once);
     }
 }

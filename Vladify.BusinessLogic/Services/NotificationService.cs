@@ -3,6 +3,7 @@ using Vladify.BusinessLogic.Exceptions;
 using Vladify.BusinessLogic.Interfaces;
 using Vladify.BusinessLogic.Models;
 using Vladify.DataAccess;
+using Vladify.DataAccess.Dto;
 using Vladify.DataAccess.Entities;
 
 namespace Vladify.BusinessLogic.Services;
@@ -61,5 +62,15 @@ public class NotificationService(INotificationRepository _repository, IMapper _m
         var subscribers = await _repository.GetEmailSubscribersAsync(pageNumber, pageSize, cancellationToken);
 
         return _mapper.Map<List<UserNotificationSettingsModel>>(subscribers);
+    }
+
+    public async Task<UserNotificationSettingsModel> PatchSubscriptionAsync(UserNotificationSubscriptionPatchRequestModel patchRequestModel, CancellationToken cancellationToken)
+    {
+        var entity = _mapper.Map<PatchSubscriptionDto>(patchRequestModel);
+
+        var updatedEntity = await _repository.PatchSubscriptionAsync(entity, cancellationToken)
+            ?? throw new NotFoundException("Notification with such id doesn't exist!");
+
+        return _mapper.Map<UserNotificationSettingsModel>(updatedEntity);
     }
 }

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Vladify.BusinessLogic\Vladify.BusinessLogic.csproj" />
     <ProjectReference Include="..\Vladify.DataAccess\Vladify.DataAccess.csproj" />
+    <ProjectReference Include="..\Vladify.NotificationAPI\Vladify.NotificationAPI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

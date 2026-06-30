@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using Vladify.DataAccess.Dto;
 using Vladify.DataAccess.Entities;
 
 namespace Vladify.DataAccess;
@@ -46,5 +47,36 @@ public class NotificationRepository(IMongoCollection<UserNotificationSettings> _
             .Skip((pageNumber - 1) * pageSize)
             .Limit(pageSize)
             .ToListAsync(cancellationToken);
+    }
+
+    public async Task<UserNotificationSettings> PatchSubscriptionAsync(PatchSubscriptionDto patchSubscriptionDto, CancellationToken cancellationToken)
+    {
+        var updateBuilder = Builders<UserNotificationSettings>.Update;
+        var updates = new List<UpdateDefinition<UserNotificationSettings>>();
+
+        if (patchSubscriptionDto.IsEmailSubscribed is not null)
+        {
+            updates.Add(updateBuilder.Set(
+                x => x.NotificationSubscription.IsEmailSubscribed,
+                patchSubscriptionDto.IsEmailSubscribed.Value));
+        }
+
+        if (updates.Count == 0)
+        {
+            return await _notifications.Find(x => x.Id == patchSubscriptionDto.Id).FirstOrDefaultAsync(cancellationToken);
+        }
+
+        var combinedUpdate = updateBuilder.Combine(updates);
+
+        var options = new FindOneAndUpdateOptions<UserNotificationSettings>
+        {
+            ReturnDocument = ReturnDocument.After
+        };
+
+        return await _notifications.FindOneAndUpdateAsync(
+            item => item.Id == patchSubscriptionDto.Id,
+            combinedUpdate,
+            options,
+            cancellationToken);
     }
 }
