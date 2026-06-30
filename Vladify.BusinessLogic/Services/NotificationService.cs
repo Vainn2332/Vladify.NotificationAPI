@@ -64,10 +64,13 @@ public class NotificationService(INotificationRepository _repository, IMapper _m
         return _mapper.Map<List<UserNotificationSettingsModel>>(subscribers);
     }
 
-    public Task PatchSubscriptionAsync(UserNotificationSubscriptionPatchRequestModel patchRequestModel, CancellationToken cancellationToken)
+    public async Task<UserNotificationSettingsModel> PatchSubscriptionAsync(UserNotificationSubscriptionPatchRequestModel patchRequestModel, CancellationToken cancellationToken)
     {
         var entity = _mapper.Map<PatchSubscriptionDto>(patchRequestModel);
 
-        return _repository.PatchSubscriptionAsync(entity, cancellationToken);
+        var updatedEntity = await _repository.PatchSubscriptionAsync(entity, cancellationToken)
+            ?? throw new NotFoundException("Notification with such id doesn't exist!");
+
+        return _mapper.Map<UserNotificationSettingsModel>(updatedEntity);
     }
 }
