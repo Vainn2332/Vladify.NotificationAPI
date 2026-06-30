@@ -9,7 +9,6 @@ using MongoDB.Driver;
 using Moq;
 using Testcontainers.MongoDb;
 using Vladify.IntegrationTests.Constants;
-using Vladify.NotificationAPI;
 
 namespace Vladify.IntegrationTests.Infrastructure;
 
@@ -21,7 +20,7 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
 
     public GraphQlClient GraphQlClient { get; private set; } = null!;
     public TestDataSeeder Seeder { get; private set; } = null!;
-    public WebApplicationFactory<Program> Factory { get; private set; } = null!;
+    internal WebApplicationFactory<Program> Factory { get; private set; } = null!;
 
     public async Task InitializeAsync()
     {
