@@ -16,11 +16,11 @@ public static class ApiExtensions
     {
         return services
             .AddBusinessLogicLayer(configuration)
-            .AddJwtBasedAuthentication(configuration)
+            .AddJwtBasedAuthentication()
             .AddGraphQL();
     }
 
-    public static IServiceCollection AddJwtBasedAuthentication(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddJwtBasedAuthentication(this IServiceCollection services)
     {
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer();
