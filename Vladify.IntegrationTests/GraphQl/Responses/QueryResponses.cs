@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Vladify.BusinessLogic.Models;
+using static Vladify.IntegrationTests.GraphQl.Dtos.ClientDtos;
 
 namespace Vladify.IntegrationTests.GraphQL.Responses;
 
