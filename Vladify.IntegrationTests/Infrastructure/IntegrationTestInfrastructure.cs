@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 using MongoDB.Driver;
 using Moq;
 using Testcontainers.MongoDb;
@@ -29,8 +28,6 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
 
         var mongoClient = new MongoClient(_mongoDbContainer.GetConnectionString());
         _database = mongoClient.GetDatabase(TestConstants.DbName);
-
-        Seeder = new TestDataSeeder(_database);
 
         Factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
@@ -61,6 +58,7 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
             });
         });
 
+        Seeder = new TestDataSeeder(_database);
         _httpClient = Factory.CreateClient();
         GraphQlClient = new GraphQlClient(_httpClient);
     }
