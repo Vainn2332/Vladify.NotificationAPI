@@ -17,5 +17,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Vladify.BusinessLogic\Vladify.BusinessLogic.csproj" />
   </ItemGroup>
-
+  
+	<ItemGroup>
+    <InternalsVisibleTo Include="Vladify.IntegrationTests" />
+  </ItemGroup>
 </Project>
