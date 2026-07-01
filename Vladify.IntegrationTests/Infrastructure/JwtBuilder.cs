@@ -1,18 +1,20 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
+using System.Text;
+using Vladify.BusinessLogic.Exceptions;
 using Vladify.IntegrationTests.Constants;
 
 namespace Vladify.IntegrationTests.Infrastructure;
 
 public static class JwtBuilder
 {
-    public static readonly string TestSecretKey = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+    public static readonly string TestSecretKey = Environment.GetEnvironmentVariable(EnvKeyNames.TestJwt)
+        ?? throw new NotFoundException("failed to get jwt key from environment!");
 
     public static string GenerateTestJWT(string email)
     {
-        var keyBytes = Convert.FromBase64String(TestSecretKey);
+        var keyBytes = Encoding.UTF8.GetBytes(TestSecretKey);
         var key = new SymmetricSecurityKey(keyBytes);
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

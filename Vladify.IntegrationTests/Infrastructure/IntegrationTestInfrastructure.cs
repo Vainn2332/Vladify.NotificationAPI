@@ -1,4 +1,5 @@
-﻿using MassTransit;
+﻿using DotNetEnv;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using Moq;
+using System.Text;
 using Testcontainers.MongoDb;
 using Vladify.IntegrationTests.Constants;
 
@@ -26,6 +28,8 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
     {
         await _mongoDbContainer.StartAsync();
 
+        Env.Load();
+
         var mongoClient = new MongoClient(_mongoDbContainer.GetConnectionString());
         _database = mongoClient.GetDatabase(TestConstants.DbName);
 
@@ -33,6 +37,7 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
         {
             builder.ConfigureAppConfiguration((context, config) =>
             {
+                config.AddEnvironmentVariables();
                 config.AddInMemoryCollection(new Dictionary<string, string?>
                 {
                     ["MongoDbOptions:ConnectionString"] = _mongoDbContainer.GetConnectionString(),
@@ -53,7 +58,7 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
                     ValidIssuer = TestConstants.Issuer,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(JwtBuilder.TestSecretKey))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtBuilder.TestSecretKey))
                 });
             });
         });
