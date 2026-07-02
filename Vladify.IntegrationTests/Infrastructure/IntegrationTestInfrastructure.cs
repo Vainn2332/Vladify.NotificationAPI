@@ -41,7 +41,20 @@ public class IntegrationTestInfrastructure : IAsyncLifetime
                 config.AddInMemoryCollection(new Dictionary<string, string?>
                 {
                     ["MongoDbOptions:ConnectionString"] = _mongoDbContainer.GetConnectionString(),
-                    ["MongoDbOptions:DatabaseName"] = TestConstants.DbName
+                    ["MongoDbOptions:DatabaseName"] = TestConstants.DbName,
+
+                    ["EmailNotificationOptions:ApplicationPassword"] = "test_password_123",
+                    ["EmailNotificationOptions:Port"] = "587",
+                    ["EmailNotificationOptions:SenderEmail"] = "test@vladify.local",
+                    ["EmailNotificationOptions:SenderName"] = "Vladify Test Environment",
+                    ["EmailNotificationOptions:SMTPClientUrl"] = "localhost",
+
+                    ["RabbitMqOptions:ServerHost"] = "localhost",
+                    ["RabbitMqOptions:Username"] = "guest",
+                    ["RabbitMqOptions:Password"] = "guest",
+
+                    ["Auth0Options:Domain"] = "https://mock-domain.auth0.local/",
+                    ["Auth0Options:Audience"] = "test_audience"
                 });
             });
 
