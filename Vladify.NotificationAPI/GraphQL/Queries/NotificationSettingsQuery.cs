@@ -1,10 +1,12 @@
-﻿using Vladify.BusinessLogic.Interfaces;
+﻿using HotChocolate.Authorization;
+using Vladify.BusinessLogic.Interfaces;
 using Vladify.BusinessLogic.Models;
 using Vladify.NotificationAPI.Constants;
 
 namespace Vladify.NotificationAPI.GraphQL.Queries;
 
 [ExtendObjectType(GraphQlConstants.QueryName)]
+[Authorize]
 public class NotificationSettingsQuery(INotificationService _notificationService)
 {
     public Task<UserNotificationSettingsModel?> GetNotificationByIdAsync(string id, CancellationToken cancellationToken)
