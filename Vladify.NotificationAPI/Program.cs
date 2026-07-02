@@ -9,6 +9,8 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddAppServices(builder.Configuration);
 
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -17,11 +19,13 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
+app.UseAuthentication();
+
+app.UseAuthorization();
+
 app.MapGraphQL();
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

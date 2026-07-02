@@ -1,4 +1,8 @@
-﻿using Vladify.BusinessLogic.Extensions;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Vladify.BusinessLogic.Extensions;
+using Vladify.BusinessLogic.Options;
 using Vladify.NotificationAPI.Constants;
 using Vladify.NotificationAPI.GraphQL;
 using Vladify.NotificationAPI.GraphQL.Mutations;
@@ -12,13 +16,40 @@ public static class ApiExtensions
     {
         return services
             .AddBusinessLogicLayer(configuration)
+            .AddJwtBasedAuthentication(configuration)
             .AddGraphQL();
+    }
+
+    public static IServiceCollection AddJwtBasedAuthentication(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer();
+
+        services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
+        .Configure<IOptions<Auth0Options>>((options, auth0) =>
+        {
+            var auth0Options = auth0.Value;
+
+            options.Authority = auth0Options.Authority;
+            options.Audience = auth0Options.Audience;
+
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true
+            };
+        });
+
+        return services;
     }
 
     public static IServiceCollection AddGraphQL(this IServiceCollection services)
     {
         services
            .AddGraphQLServer()
+           .AddAuthorization()
            .AddQueryType(q => q.Name(GraphQlConstants.QueryName))
            .AddMutationType(q => q.Name(GraphQlConstants.MutationName))
            .AddTypeExtension<NotificationSettingsQuery>()

@@ -43,7 +43,11 @@ public static class DataAccessExtensions
 
     public static IServiceCollection ConfigureOptions(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<MongoDbOptions>(configuration.GetSection(MongoDbOptions.SectionName));
+        services
+           .AddOptions<MongoDbOptions>()
+           .BindConfiguration(MongoDbOptions.SectionName)
+           .ValidateOnStart()
+           .ValidateDataAnnotations();
 
         return services;
     }
