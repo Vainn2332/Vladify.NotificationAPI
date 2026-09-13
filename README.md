@@ -79,7 +79,7 @@ Dependency direction: `NotificationAPI → BusinessLogic → DataAccess`.
 
 3. **Start the Vladify service FIRST**
 
-   > ⚠️ **Order matters.** RabbitMQ is **not** part of this repo's `compose.yml` — it
+   > !!! **Order matters.** RabbitMQ is **not** part of this repo's `compose.yml` — it
    > is owned by the main **Vladify** service, whose compose creates the shared Docker
    > network `vladify-network` and runs the broker on it. This microservice attaches to
    > that network as `external`, so the Vladify stack must already be up. If you start
