@@ -1,6 +1,11 @@
 ﻿# Vladify.NotificationAPI
 
 ![CI](https://github.com/Vainn2332/Vladify.NotificationAPI/actions/workflows/ci.yml/badge.svg)
+[![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=Vainn2332_Vladify.NotificationAPI&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Vainn2332_Vladify.NotificationAPI)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Vainn2332_Vladify.NotificationAPI&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Vainn2332_Vladify.NotificationAPI)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Vainn2332_Vladify.NotificationAPI&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Vainn2332_Vladify.NotificationAPI)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Vainn2332_Vladify.NotificationAPI&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Vainn2332_Vladify.NotificationAPI)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Vainn2332_Vladify.NotificationAPI&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Vainn2332_Vladify.NotificationAPI)
 
 Notification microservice for the Vladify platform. It stores per-user notification
 preferences, reacts to domain events coming over RabbitMQ, and delivers email
