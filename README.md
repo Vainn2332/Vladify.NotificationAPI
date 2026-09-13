@@ -97,11 +97,8 @@ Dependency direction: `NotificationAPI → BusinessLogic → DataAccess`.
    dotnet run --project Vladify.NotificationAPI
    ```
 
-   In the `Development` environment you get:
 
-   - GraphQL endpoint: `/graphql`
-   - Scalar API reference: `/scalar`
-   - OpenAPI document: `/openapi/v1.json`
+   - GraphQL endpoint: `/graphql` (all environments)
 
 ## Configuration
 
@@ -123,6 +120,7 @@ app will fail fast if a required value is missing.
 | `RabbitMqOptions__Password` | RabbitMQ password. |
 | `Auth0Options__Domain` | Auth0 domain, e.g. `your-tenant.eu.auth0.com` (the authority becomes `https://<domain>`). |
 | `Auth0Options__Audience` | Expected JWT audience, e.g. `https://Vladify/musicAPI`. |
+| `TEST_JWT_KEY` | Used for local integration testing(creating JWT). |
 | `ASPNETCORE_ENVIRONMENT` | `Development`, `Staging`, or `Production`. |
 
 > **Never commit `.env`.** It is excluded by `.gitignore` by default.
@@ -163,6 +161,9 @@ dotnet test
 - `Vladify.UnitTests` — unit tests for services, consumers, factories, and the GraphQL error filter.
 - `Vladify.IntegrationTests` — end-to-end GraphQL tests with a test JWT builder and data seeding.
 
+### CI secrets
 
-Required repository secrets: `SONAR_TOKEN` for SonarCloud in CI, `TEST_JWT_SECRETKEY`.
+In CI the value comes from the `TEST_JWT_SECRETKEY` GitHub Actions secret,
+
+Required CI secrets: `SONAR_TOKEN` (SonarCloud analysis) and `TEST_JWT_SECRETKEY`.
 
