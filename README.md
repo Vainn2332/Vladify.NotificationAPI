@@ -1,11 +1,12 @@
-# Vladify.NotificationAPI
+﻿# Vladify.NotificationAPI
+
+![CI](https://github.com/Vainn2332/Vladify.NotificationAPI/actions/workflows/ci.yml/badge.svg)
 
 Notification microservice for the Vladify platform. It stores per-user notification
 preferences, reacts to domain events coming over RabbitMQ, and delivers email
 notifications over SMTP. The public surface is a **GraphQL** API secured with
 **Auth0** JWTs.
 
-![CI](https://github.com/Vainn2332/Vladify.NotificationAPI/actions/workflows/ci.yml/badge.svg)
 
 ## Features
 
@@ -162,13 +163,6 @@ dotnet test
 - `Vladify.UnitTests` — unit tests for services, consumers, factories, and the GraphQL error filter.
 - `Vladify.IntegrationTests` — end-to-end GraphQL tests with a test JWT builder and data seeding.
 
-## Continuous integration
 
-GitHub Actions ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs on pushes and
-pull requests to `main`:
+Required repository secrets: `SONAR_TOKEN` for SonarCloud in CI, `TEST_JWT_SECRETKEY`.
 
-1. Restore, build (`Release`).
-2. Run tests with OpenCover code coverage.
-3. Run SonarCloud static analysis.
-
-Required repository secrets: `SONAR_TOKEN`, `TEST_JWT_SECRETKEY`.
