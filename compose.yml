@@ -1,16 +1,43 @@
 services:
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
+  mongodb:
+    image: mongo:7
+    container_name: mongodb
     environment:
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USERNAME}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+      - MONGO_INITDB_ROOT_USERNAME=${MongoDbOptions__Username}
+      - MONGO_INITDB_ROOT_PASSWORD=${MongoDbOptions__Password}
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "27017:27017"
     volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
+      - mongodb_data:/data/db
+    networks:
+      - vladify-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Vladify.NotificationAPI/Dockerfile
+    container_name: vladify-notification-api
+    env_file:
+      - .env
+    environment:
+      - RabbitMqOptions__ServerHost=rabbitmq
+      - MongoDbOptions__ConnectionString=mongodb://${MongoDbOptions__Username}:${MongoDbOptions__Password}@mongodb
+    ports:
+      - "8083:8080"
+    networks:
+      - vladify-network
+    depends_on:
+      mongodb:
+        condition: service_healthy
 
 volumes:
-  rabbitmq_data:
-    
+  mongodb_data:
+
+networks:
+  vladify-network:
+    external: true

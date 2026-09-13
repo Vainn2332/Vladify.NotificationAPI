@@ -1,0 +1,22 @@
+# Build artifacts
+**/bin/
+**/obj/
+**/TestResults/
+
+# Test projects are not part of the runtime image
+Vladify.UnitTests/
+Vladify.IntegrationTests/
+
+# VCS / IDE
+.git/
+.github/
+.vs/
+.vscode/
+*.user
+
+# Secrets and local files — never bake into an image layer
+.env
+*.env
+
+# Docs
+README.md
