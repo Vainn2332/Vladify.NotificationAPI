@@ -1,5 +1,8 @@
 using Scalar.AspNetCore;
+using Vladify.NotificationAPI.Config;
 using Vladify.NotificationAPI.Extensions;
+
+EnvLoader.LoadEnvVariables();
 
 var builder = WebApplication.CreateBuilder(args);
 
