@@ -50,8 +50,8 @@ Dependency direction: `NotificationAPI → BusinessLogic → DataAccess`.
 ## Prerequisites
 
 - [.NET 9 SDK](https://dotnet.microsoft.com/download)
-- [Docker](https://www.docker.com/) (for the local RabbitMQ instance)
-- A **MongoDB** instance (local or hosted)
+- [Docker](https://www.docker.com/) — runs this service's MongoDB + API containers (see `compose.yml`)
+- The main **Vladify** service — its compose creates the shared `vladify-network` and runs RabbitMQ
 - An **Auth0** tenant (for issuing/validating JWTs)
 - A mailbox that supports SMTP with an app password (e.g. a Gmail account with an
   [app password](https://support.google.com/accounts/answer/185833))
@@ -77,28 +77,43 @@ Dependency direction: `NotificationAPI → BusinessLogic → DataAccess`.
    [.NET user secrets](https://learn.microsoft.com/aspnet/core/security/app-secrets)
    with the same `Section__Key` keys.
 
-3. **Start RabbitMQ**
+3. **Start the Vladify service FIRST**
 
-   `compose.yml` provides a RabbitMQ container with the management UI. It reads
-   `RABBITMQ_USERNAME` / `RABBITMQ_PASSWORD` from your environment (set them in `.env`
-   or export them first, and use the same values for `RabbitMqOptions__*`):
+   > ⚠️ **Order matters.** RabbitMQ is **not** part of this repo's `compose.yml` — it
+   > is owned by the main **Vladify** service, whose compose creates the shared Docker
+   > network `vladify-network` and runs the broker on it. This microservice attaches to
+   > that network as `external`, so the Vladify stack must already be up. If you start
+   > this service first, `docker compose up` fails with
+   > `network vladify-network declared as external, but could not be found`.
+
+   In the **Vladify** repository:
 
    ```bash
    docker compose up -d
    ```
 
-   - AMQP: `localhost:5672`
-   - Management UI: <http://localhost:15672>
+   - RabbitMQ AMQP: `localhost:5672`
+   - RabbitMQ Management UI: <http://localhost:15672>
 
-4. **Run the API**
+   > The credentials in this service's `RabbitMqOptions__Username` / `RabbitMqOptions__Password`
+   > must match the user Vladify provisions on the broker, otherwise the API fails to
+   > authenticate with `ACCESS_REFUSED - Login was refused`.
+
+4. **Start this microservice (MongoDB + API)**
+
+   This repo's `compose.yml` starts MongoDB and the API and joins the shared
+   `vladify-network` to reach RabbitMQ:
 
    ```bash
-   dotnet restore
-   dotnet run --project Vladify.NotificationAPI
+   docker compose up -d --build
    ```
 
+   - API (GraphQL): <http://localhost:8083/graphql>
+   - MongoDB: `localhost:27017`
 
-   - GraphQL endpoint: `/graphql` (all environments)
+   MongoDB is created with the root credentials from `MongoDbOptions__Username` /
+   `MongoDbOptions__Password`. To run the API locally instead (against the containers),
+   use `dotnet run --project Vladify.NotificationAPI`.
 
 ## Configuration
 
