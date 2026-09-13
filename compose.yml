@@ -1,23 +1,4 @@
 services:
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmqqq
-    environment:
-      - RABBITMQ_DEFAULT_USER=${RabbitMqOptions__Username}
-      - RABBITMQ_DEFAULT_PASS=${RabbitMqOptions__Password}
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-    networks:
-      - vladify-network
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   mongodb:
     image: mongo:7
     container_name: mongodb
@@ -51,13 +32,10 @@ services:
     networks:
       - vladify-network
     depends_on:
-      rabbitmq:
-        condition: service_healthy
       mongodb:
         condition: service_healthy
 
 volumes:
-  rabbitmq_data:
   mongodb_data:
 
 networks:
