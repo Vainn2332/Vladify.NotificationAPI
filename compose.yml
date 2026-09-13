@@ -1,7 +1,7 @@
 services:
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: rabbitmq
+    container_name: rabbitmqqq
     environment:
       - RABBITMQ_DEFAULT_USER=${RabbitMqOptions__Username}
       - RABBITMQ_DEFAULT_PASS=${RabbitMqOptions__Password}
@@ -10,6 +10,8 @@ services:
       - "15672:15672"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - vladify-network
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
@@ -26,6 +28,8 @@ services:
       - "27017:27017"
     volumes:
       - mongodb_data:/data/db
+    networks:
+      - vladify-network
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
       interval: 10s
@@ -44,6 +48,8 @@ services:
       - MongoDbOptions__ConnectionString=mongodb://${MongoDbOptions__Username}:${MongoDbOptions__Password}@mongodb
     ports:
       - "8083:8080"
+    networks:
+      - vladify-network
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -53,3 +59,7 @@ services:
 volumes:
   rabbitmq_data:
   mongodb_data:
+
+networks:
+  vladify-network:
+    external: true
