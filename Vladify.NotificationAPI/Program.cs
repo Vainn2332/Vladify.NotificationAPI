@@ -1,4 +1,3 @@
-using Scalar.AspNetCore;
 using Vladify.NotificationAPI.Config;
 using Vladify.NotificationAPI.Extensions;
 
@@ -19,7 +18,6 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference();
 }
 
 app.UseAuthentication();
